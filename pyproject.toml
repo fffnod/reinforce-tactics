@@ -41,6 +41,11 @@ gui = [
     "opencv-python",
     "matplotlib",
     "Pillow",
+    # Replay video export (reinforcetactics/utils/video.py) imports both.
+    # They were listed in requirements.txt but missing here, so a
+    # `pip install reinforcetactics[gui]` could not export a video.
+    "imageio",
+    "imageio-ffmpeg",
 ]
 llm = [
     "openai",

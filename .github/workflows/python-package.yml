@@ -4,13 +4,33 @@
 name: Python package
 
 on:
+  # Every branch, not just main: this is the repository's only Python CI
+  # workflow, so a branch push has to be checked before it becomes a PR.
   push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
+# Read-only: this workflow only inspects the checkout.
+permissions:
+  contents: read
+
+# Supersede a stale run when the same ref is pushed again. The event is part
+# of the key because push and pull_request no longer race for the same
+# commit — the job guard below decides which one runs — so they should not
+# be able to cancel each other.
+concurrency:
+  group: build-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
+
+    # A same-repo PR fires both push and pull_request for one commit. The
+    # push event already covers those branches, so the pull_request event
+    # only needs to run for forks, whose pushes never reach this repo.
+    # Without the guard both events run the full matrix and one gets
+    # cancelled, leaving `cancelled` check runs on every PR push.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     runs-on: ubuntu-latest
     strategy:
@@ -24,11 +44,26 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        cache-dependency-path: |
+          requirements.txt
+          pyproject.toml
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        # CPU-only torch. GitHub runners have no GPU, and the default CUDA
+        # build drags in ~2GB of nvidia-*/triton wheels that are downloaded
+        # and then never used. Installing it first means the plain `torch`
+        # in requirements.txt is already satisfied.
+        pip install torch --index-url https://download.pytorch.org/whl/cpu
         python -m pip install ruff mypy pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install the package
+      # Exercises the pyproject metadata itself (package discovery, extras,
+      # entry point). Tests otherwise import reinforcetactics straight from
+      # the checkout, so a broken [project] table would ship unnoticed.
+      run: |
+        pip install -e .
     - name: Lint with ruff
       run: |
         ruff check .
@@ -39,5 +74,10 @@ jobs:
       run: |
         mypy .
     - name: Test with pytest
+      env:
+        # The UI tests open pygame windows. Pin SDL to the dummy backend so
+        # they exercise the same headless path every time instead of relying
+        # on whatever driver the runner happens to fall back to.
+        SDL_VIDEODRIVER: dummy
       run: |
         pytest
