@@ -18,3 +18,20 @@ repos:
       - id: ruff
         args: ['--fix']
       - id: ruff-format
+
+  # CI type-checks the whole tree, but only ruff ran locally, so type errors
+  # were routinely discovered by a red build instead of by the hook. Runs
+  # against the local interpreter and the project's real dependencies
+  # (mypy's own venv would not have numpy/pandas/torch to resolve).
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        # Type checking is whole-program: pass the tree, not the staged
+        # files, or an edit in one module misses the error it causes in
+        # another.
+        pass_filenames: false
+        args: ['.']

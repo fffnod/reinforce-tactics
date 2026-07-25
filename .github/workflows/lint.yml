@@ -2,10 +2,23 @@ name: Lint and Type Check
 
 on: [push]
 
+# Read-only: this workflow only inspects the checkout.
+permissions:
+  contents: read
+
+# A new push supersedes the previous one on the same ref, so in-flight runs
+# for stale commits are cancelled instead of competing for runners.
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     strategy:
+      # Report every version's result. Without this a 3.11 failure cancels
+      # 3.12/3.13, hiding whether the problem is version-specific.
+      fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
     steps:
@@ -14,9 +27,18 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        cache-dependency-path: |
+          requirements.txt
+          pyproject.toml
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        # CPU-only torch. GitHub runners have no GPU, and the default CUDA
+        # build drags in ~2GB of nvidia-*/triton wheels that are downloaded
+        # and then never used. Installing it first means the plain `torch`
+        # in requirements.txt is already satisfied.
+        pip install torch --index-url https://download.pytorch.org/whl/cpu
         pip install ruff mypy
         pip install -r requirements.txt
     - name: Lint with ruff
@@ -26,5 +48,8 @@ jobs:
       run: |
         ruff format --check .
     - name: Type check with mypy
+      # Same scope as the Python package workflow. These used to disagree
+      # (`reinforcetactics/` here, `.` there), so a type error under tests/
+      # or scripts/ failed one workflow and passed the other.
       run: |
-        mypy reinforcetactics/
+        mypy .

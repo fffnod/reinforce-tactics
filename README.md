@@ -255,7 +255,17 @@ pip install -e ".[dev]"
 pre-commit install
 ```
 
-See the [documentation](https://reinforcetactics.com) for development guidelines.
+CI runs these four checks; run them before pushing to get the same answer
+locally that the build will give you:
+
+```bash
+ruff check .          # lint
+ruff format --check . # formatting
+mypy .                # types — the whole tree, not just reinforcetactics/
+pytest                # tests, with the coverage gate from pyproject.toml
+```
+
+`pre-commit install` wires up all four except `pytest`.
 
 ## License
 
