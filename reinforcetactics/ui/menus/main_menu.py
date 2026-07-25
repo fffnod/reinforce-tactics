@@ -138,10 +138,14 @@ class MainMenu(Menu):
         # Return to main menu after credits
 
     def _quit(self) -> dict[str, Any] | None:
-        """Handle quit, confirming first so a stray click can't end the app."""
+        """Handle quit, confirming first so a stray click can't end the app.
+
+        Returns None when the player backs out, which the menu loop reads as
+        "no result" and stays on the menu.
+        """
         if self._confirm_quit():
             return {"type": "exit"}
-        return "cancelled"
+        return None
 
     def _confirm_quit(self) -> bool:
         """Ask the player to confirm closing the game."""

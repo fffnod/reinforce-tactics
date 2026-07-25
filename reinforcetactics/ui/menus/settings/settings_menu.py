@@ -1,6 +1,7 @@
 """Settings menu."""
 
-from typing import Any
+from collections.abc import Callable
+from typing import Any, Protocol
 
 import pygame
 
@@ -10,6 +11,12 @@ from reinforcetactics.ui.menus.settings.graphics_menu import GraphicsMenu
 from reinforcetactics.ui.menus.settings.language_menu import LanguageMenu
 from reinforcetactics.ui.menus.settings.units_menu import UnitsMenu
 from reinforcetactics.utils.language import get_language
+
+
+class _SubMenu(Protocol):
+    """What the settings screen needs from a sub-menu: a loop it can run."""
+
+    def run(self) -> Any: ...
 
 
 class SettingsMenu(Menu):
@@ -72,7 +79,10 @@ class SettingsMenu(Menu):
         return "api_keys_menu"
 
     # Sentinel returned by an option -> sub-menu class to open for it.
-    _SUBMENUS = {
+    # Typed as a factory rather than ``type[Menu]`` because APIKeysMenu is a
+    # standalone screen, not a Menu subclass; all four share only the
+    # "construct with a screen, then run()" shape.
+    _SUBMENUS: dict[str, Callable[[pygame.Surface], _SubMenu]] = {
         "language_menu": LanguageMenu,
         "graphics_menu": GraphicsMenu,
         "units_menu": UnitsMenu,

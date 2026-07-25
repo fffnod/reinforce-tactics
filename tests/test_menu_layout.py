@@ -6,6 +6,8 @@ is), the click targets match what was drawn, and the keyboard can reach
 every control.
 """
 
+from unittest.mock import patch
+
 import pygame
 import pytest
 
@@ -266,6 +268,37 @@ class TestPlayerConfigKeyboard:
 
         menu.handle_input(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {"button": 1, "pos": start[0]["rect"].center}))
         assert menu.status_message and "Player 2" in menu.status_message
+
+
+class TestMainMenuQuitConfirmation:
+    """ESC on the main menu closes the app, so it must ask first."""
+
+    @staticmethod
+    def _esc():
+        return pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_ESCAPE})
+
+    def test_declining_keeps_the_menu_open(self, pygame_init):
+        from reinforcetactics.ui.menus.main_menu import MainMenu
+
+        with patch.object(MainMenu, "_confirm_quit", return_value=False):
+            menu = MainMenu()
+            assert menu.handle_input(self._esc()) is None
+            assert menu.running is True
+
+    def test_confirming_exits(self, pygame_init):
+        from reinforcetactics.ui.menus.main_menu import MainMenu
+
+        with patch.object(MainMenu, "_confirm_quit", return_value=True):
+            menu = MainMenu()
+            result = menu.handle_input(self._esc())
+            assert result == {"type": "exit"}
+            assert menu._on_result(result) == (True, {"type": "exit"})
+
+    def test_window_close_exits_without_asking(self, pygame_init):
+        from reinforcetactics.ui.menus.main_menu import MainMenu
+
+        menu = MainMenu()
+        assert menu._on_quit_event() == (True, {"type": "exit"})
 
 
 class TestDrainEvents:
