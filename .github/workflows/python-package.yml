@@ -4,8 +4,9 @@
 name: Python package
 
 on:
+  # Every branch, not just main: this is the repository's only Python CI
+  # workflow, so a branch push has to be checked before it becomes a PR.
   push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -13,10 +14,13 @@ on:
 permissions:
   contents: read
 
-# A new push supersedes the previous one on the same ref, so in-flight runs
-# for stale commits are cancelled instead of competing for runners.
+# Keyed on the branch name rather than the raw ref so the push event and the
+# pull_request event for the same commit share a group. A same-repo PR fires
+# both, and without this they would each run the full matrix — the exact
+# duplication that removing the separate lint workflow was meant to end.
+# cancel-in-progress then also supersedes stale commits on a rapid re-push.
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
