@@ -1,0 +1,22 @@
+# Conda environment for Reinforce Tactics local deploy.
+# Recreates the setup used on the original development machine.
+#
+# Usage (from repo root):
+#   conda env create -f deploy/environment.yml
+#   conda activate reinforce-tactics
+#   pip install -e ".[gui]"
+#
+# Prefer deploy/install.ps1 or deploy/install.bat for one-click setup.
+
+name: reinforce-tactics
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - setuptools
+  - wheel
+  - pip:
+      # Pinned third-party stack (see requirements-lock.txt).
+      # Project itself is installed editable by install.ps1 after env create.
+      - -r requirements-lock.txt

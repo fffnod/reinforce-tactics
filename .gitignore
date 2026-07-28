@@ -32,6 +32,9 @@ htmlcov/
 dist/
 build/
 
+# Local one-click migration zips (also under dist/; listed for clarity)
+# dist/reinforce-tactics-deploy-*.zip
+
 # RL training and evaluation artifacts
 /tournament_results
 /checkpoints

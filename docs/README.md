@@ -12,6 +12,7 @@ part of the published user manual.
 
 | File | Audience | Purpose |
 |---|---|---|
+| [`LOCAL_DEPLOY.md`](LOCAL_DEPLOY.md) | Contributors / local users | Windows + Conda local install, one-click scripts, and PC migration |
 | [`ROADMAP.md`](ROADMAP.md) | Contributors | Planned features, milestones, and open work |
 | [`vertex_training.md`](vertex_training.md) | Contributors | Run training on Google Cloud via Vertex AI custom jobs (Docker + GCS) |
 | [`MAP_EDITOR.md`](MAP_EDITOR.md) | Contributors | How the in-game map editor works internally |
