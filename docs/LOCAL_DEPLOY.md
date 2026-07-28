@@ -270,31 +270,78 @@ conda activate reinforce-tactics
 python main.py
 ```
 
-### 5.4 可选：完全离线（conda-pack，进阶）
+### 5.4 完整离线部署包（推荐离线场景）
 
-适合「目标机无网或极慢」：
+一键脚本会打包：**源码 + conda-pack 完整环境 +（可选）wheels 镜像 + 离线安装脚本**。
 
-```powershell
-# 源机器（已装好 reinforce-tactics 环境）
-conda install -n base -c conda-forge conda-pack -y
-conda pack -n reinforce-tactics -o dist/reinforce-tactics-env.tar.gz
-```
+#### 源机器打包
 
-目标机：
+前提：已存在可用环境 `reinforce-tactics`（见 §3 / §4）。
 
 ```powershell
-mkdir C:\envs\reinforce-tactics
-tar -xzf reinforce-tactics-env.tar.gz -C C:\envs\reinforce-tactics
-# 按 conda-pack 文档执行 conda-unpack
+cd <repo-root>
+.\deploy\pack-offline.ps1
+# 更快、略小（不额外导出 wheels）：
+.\deploy\pack-offline.ps1 -SkipWheels
 ```
 
-注意：
+产物示例：
 
-- 包体很大（常 > 2–5 GB）  
-- **Windows 路径、CUDA 驱动** 与源机不一致时可能出问题  
-- 源码仍建议单独同步，env 包只解决「Python 依赖」  
+```text
+dist/reinforce-tactics-offline-YYYYMMDD-HHMM.zip   # 通常约 1–2+ GB
+dist/reinforce-tactics-offline-YYYYMMDD-HHMM.manifest.txt
+```
 
-日常推荐仍用 **zip + install.ps1 + 联网**。
+包内结构：
+
+| 路径 | 说明 |
+|------|------|
+| `env/reinforce-tactics-env.tar.gz` | 完整 Python 环境（含 torch、SB3、pygame 等） |
+| `source/` | 项目源码 |
+| `wheels/` | pip 轮子备用镜像（未加 `-SkipWheels` 时） |
+| `deploy/install-offline.ps1` | 离线安装逻辑 |
+| `install-offline.bat` | 双击入口 |
+| `START_HERE.txt` | 目标机说明 |
+
+#### 目标机器安装（无需联网、无需预装 Anaconda）
+
+1. 解压到 **英文路径**（避免空格/中文），例如 `D:\rt-offline`  
+2. 双击 `install-offline.bat`，或：
+
+```powershell
+cd D:\rt-offline
+.\deploy\install-offline.ps1
+```
+
+3. 安装脚本会：解压环境 → `conda-unpack` → 通过 `.pth` 将 `source/` 链入 `sys.path`（完全离线，无需 pip 联网构建）→ 冒烟测试  
+4. 使用生成的激活脚本：
+
+```text
+Activate-ReinforceTactics.bat
+```
+
+然后：
+
+```powershell
+python main.py
+```
+
+#### 注意
+
+| 项 | 说明 |
+|----|------|
+| 体积 | 明显大于轻量迁移包；请预留数 GB 磁盘 |
+| 平台 | 仅适用于 **同类 Windows x64**；不要拷到 Linux/macOS |
+| GPU | 包内一般为 **CPU 版 torch**；不会自动变成 CUDA 版 |
+| 路径 | 安装后环境在包内 `runtime\reinforce-tactics`（可用 `-Prefix` 改） |
+| 重装 | 删除 `runtime\` 后再次运行 `install-offline.bat` 即可 |
+
+手工 `conda-pack`（不推荐，除非调试）：
+
+```powershell
+conda run -n reinforce-tactics python -m pip install conda-pack
+conda run -n reinforce-tactics python -m conda_pack -n reinforce-tactics -o dist\env.tar.gz
+```
 
 ---
 
