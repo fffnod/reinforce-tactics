@@ -8,6 +8,15 @@ part of the published user manual.
 > published at **[reinforcetactics.com](https://reinforcetactics.com)** and
 > sourced from [`docs-site/`](../docs-site/).
 
+## Bilingual layout
+
+| Path | Language |
+|------|----------|
+| [`docs/`](./) (this directory) | English originals |
+| [`docs/zh/`](zh/) | Simplified Chinese translations |
+| [`docs-site/docs/`](../docs-site/docs/) | User docs (EN) |
+| [`docs-site/zh/`](../docs-site/zh/) | User docs (ZH) |
+
 ## What's here
 
 | File | Audience | Purpose |

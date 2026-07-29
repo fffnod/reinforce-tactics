@@ -1,0 +1,500 @@
+---
+sidebar_position: 4
+id: tournaments
+title: Bot 锦标赛
+---
+
+# Bot 锦标赛
+
+欢迎来到 Reinforce Tactics Bot 锦标赛页面！本页跟踪不同类型 Bot 之间的官方锦标赛结果，展示规则 Bot、LLM 驱动 Bot 与已训练 RL 模型的表现。
+
+## 什么是锦标赛？
+
+Reinforce Tactics 中的锦标赛以循环赛形式让不同类型的 Bot 相互对战。每组对阵包含多局对局，Bot 交替作为玩家 1 与玩家 2，以抵消先手优势。
+
+### 锦标赛格式
+
+- **循环赛**：每个 Bot 与每个其他 Bot 对战
+- **公平对战**：每个 Bot 作为玩家 1 与玩家 2 的对局数相等
+- **地图**：通常在 6x6 新手地图上进行快速对局
+- **结果**：胜/负/平记录与胜率统计
+
+## Bot 类型
+
+### SimpleBot
+遵循简单策略的规则 AI：
+- 优先购买最贵单位（每回合一个）
+- 优先占领建筑与塔楼
+- 攻击附近的敌方单位
+- 始终包含在锦标赛中
+
+### MediumBot
+策略更复杂的改进型规则 AI：
+- **最大化单位购买**：每回合购买多个单位，而非仅一个
+- **协调攻击**：计划集火，在一回合内击杀敌人
+- **智能优先级**：优先占领离己方 HQ 最近的建筑
+- **打断占领**：攻击正在占领建筑的敌人
+- **高效战斗**：评估伤害/费用比以做出更好的攻击决策
+- 默认与 SimpleBot 一同包含在锦标赛中
+
+### AdvancedBot
+扩展 MediumBot 的高度复杂 AI，具备增强战略能力：
+- **继承 MediumBot**：基于 MediumBot 经过验证的协调攻击与占领策略
+- **增强单位编成**：跨全部 8 种单位类型的优化购买（25% Warriors、20% Archers、15% Mages、10% Knights、10% Rogues、8% Barbarians、7% Clerics、5% Sorcerers）
+- **山脉站位**：攻击前将单位部署在山脉上以获得加成伤害
+- **智能远程战斗**：优先使用 Archer 与 Mage 远程攻击以减少反击伤害
+- **特殊能力使用**：有效对高价值目标使用 Mage 麻痹，对受伤前线单位使用 Cleric 治疗
+- **地图意识**：首回合分析 HQ 位置与防守山脉位置
+- **激进战术**：更激进的攻击优先级与敌人追击
+- 默认与 SimpleBot、MediumBot 一同包含在锦标赛中
+
+### MasterBot
+扩展 AdvancedBot 的大师级脚本 Bot，带有针对性升级：
+- **继承 AdvancedBot**：保留完整游戏阶段状态机、克制矩阵、撤退阈值与特殊能力编排
+- **威胁图**：每回合计算一次每格预期受到伤害，用于撤退格子选择与 Knight 冲锋落点——避免走进交叉火力，同时不偏向前压交战
+- **按 HP 升序集火**：串联攻击者时，最低 HP 的友军先出手，使受伤攻击者在可能被反击击杀前打出最后一击
+- **HQ 狙击优先级**：在征服阶段，敌方 HQ 优先于等距塔楼，使每个单位推动胜利条件
+- **加速跟进**：已加速单位在已占领/攻击/冲锋后仍可执行第二次行动——实现双占领、双冲锋与 Barbarian 跨图机动
+
+### MixedBot
+课程桥接 Bot，非独立策略：
+- **构造时采样两个 Bot 之一**（例如 `easy=simple`、`hard=medium`），概率为 `p_hard`
+- **按 episode**：每个 episode 全程以被采样的 Bot 进行（无 episode 中途切换），从而在选中更难 Bot 的 episode 中保留其多回合策略
+- 用作 bootstrap 课程中的垫脚石（`configs/ppo/bootstrap.yaml`）——例如 `simple → medium` 与 `medium → advanced` 桥接
+
+### LLM Bot
+由大语言模型驱动的 AI：
+- **OpenAIBot**：由 GPT 模型驱动
+- **ClaudeBot**：由 Anthropic 的 Claude 驱动
+- **GeminiBot**：由 Google 的 Gemini 驱动
+- 使用自然语言推理做出战略决策
+
+### Model Bot
+使用强化学习训练：
+- 使用 Stable-Baselines3（PPO、A2C 或 DQN）
+- 通过自对弈与对手挑战进行训练
+- 通过经验学习最优策略
+
+## 运行你自己的锦标赛
+
+想运行锦标赛？很简单！详见 [锦标赛系统](./tournament-system.md) 指南了解详细说明。
+
+快速开始：
+```bash
+python3 scripts/tournament.py
+```
+
+## 官方锦标赛结果
+
+以下是在 Reinforce Tactics 平台上运行的官方锦标赛结果。结果按游戏版本组织。
+
+---
+
+## 版本 0.1.0
+
+### 锦标赛 #1 - 2025 年 12 月 19 日
+
+**配置：**
+- **每组对阵对局数：** 每方 2 局（跨所有地图每对 Bot 共 16 局）
+- **地图池模式：** 全部地图均对战
+- **起始 ELO：** 1500
+
+**使用的地图：**
+
+<div style={{display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center', marginBottom: '20px'}}>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/beginner.png" alt="Beginner Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>beginner.csv</strong><br/>6×6 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/funnel_point.png" alt="Funnel Point Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>funnel_point.csv</strong><br/>13×11 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/center_mountains.png" alt="Center Mountains Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>center_mountains.csv</strong><br/>18×18 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/corner_points.png" alt="Corner Points Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>corner_points.csv</strong><br/>12×10 • 2 名玩家</p>
+  </div>
+</div>
+
+**地图图例：**
+- 🟩 **绿色** - 平原（可行走地形）
+- 🟦 **蓝色** - 海洋/水域（不可通行）
+- ⬜ **浅灰** - 山脉（不可通行，提供攻击加成）
+- 🌲 **深绿色** - 森林（提供防御加成）
+- 🟫 **棕色** - 道路（移动更快）
+- 🔴 **红色** - 玩家 1 建筑（HQ、建筑）
+- 🔵 **蓝色调** - 玩家 2 建筑（HQ、建筑）
+- ⬜ **白色/灰色** - 中立塔楼/建筑
+
+**参赛者：**
+- SimpleBot（规则）
+- MediumBot（规则）
+- AdvancedBot（规则）
+- Claude Haiku 4.5（claude-haiku-4-5-20251001）
+
+#### 最终排名
+
+| 排名 | Bot 名称 | 胜 | 负 | 平 | 总对局 | 胜率 | ELO | ELO 变化 |
+|------|----------|------|--------|-------|-------------|----------|-----|------------|
+| 🥇 1 | AdvancedBot | 36 | 2 | 10 | 48 | 75.0% | 1693 | +193 |
+| 🥈 2 | MediumBot | 19 | 10 | 19 | 48 | 39.6% | 1575 | +75 |
+| 🥉 3 | SimpleBot | 1 | 20 | 27 | 48 | 2.1% | 1405 | -95 |
+| 4 | Claude Haiku 4.5 | 2 | 26 | 20 | 48 | 4.2% | 1327 | -173 |
+
+#### 交手结果
+
+| 对阵 | 胜 | 负 | 平 | 备注 |
+|---------|------|--------|-------|-------|
+| SimpleBot vs MediumBot | 0 | 6 | 10 | MediumBot 占据主导 |
+| SimpleBot vs AdvancedBot | 0 | 12 | 4 | AdvancedBot 完全横扫 |
+| SimpleBot vs Claude Haiku 4.5 | 1 | 2 | 13 | 多为平局，LLM 略占优 |
+| MediumBot vs AdvancedBot | 2 | 10 | 4 | AdvancedBot 明显更强 |
+| MediumBot vs Claude Haiku 4.5 | 11 | 0 | 5 | MediumBot 全胜纪录 |
+| AdvancedBot vs Claude Haiku 4.5 | 14 | 0 | 2 | 完全压制 |
+
+#### 分地图表现
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/beginner.png" alt="Beginner Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### beginner.csv（6×6）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 12 | 0 | 0 |
+| MediumBot | 4 | 4 | 4 |
+| Claude Haiku 4.5 | 2 | 7 | 3 |
+| SimpleBot | 1 | 8 | 3 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/funnel_point.png" alt="Funnel Point Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### funnel_point.csv（13×11）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| MediumBot | 8 | 0 | 4 |
+| AdvancedBot | 6 | 2 | 4 |
+| SimpleBot | 0 | 4 | 8 |
+| Claude Haiku 4.5 | 0 | 8 | 4 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/center_mountains.png" alt="Center Mountains Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### center_mountains.csv（18×18）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 6 | 0 | 6 |
+| MediumBot | 1 | 2 | 9 |
+| SimpleBot | 0 | 2 | 10 |
+| Claude Haiku 4.5 | 0 | 3 | 9 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/corner_points.png" alt="Corner Points Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### corner_points.csv（12×10）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 12 | 0 | 0 |
+| MediumBot | 6 | 4 | 2 |
+| SimpleBot | 0 | 6 | 6 |
+| Claude Haiku 4.5 | 0 | 8 | 4 |
+
+</div>
+</div>
+
+#### 分析
+
+**关键发现：**
+
+1. **AdvancedBot 占据主导**：AdvancedBot 表现极为出色，胜率 75%，ELO +193。其复杂策略（山脉站位、远程战斗、特殊能力）证明非常有效。
+
+2. **MediumBot 表现稳健**：胜率 39.6%，ELO +75，MediumBot 展现了协调攻击与最大化单位生产相对于 SimpleBot 基础打法的价值。
+
+3. **LLM Bot 表现挣扎**：Claude Haiku 垫底，胜率仅 4.2%（ELO -173）。这表明当前 LLM 推理可能尚未针对此游戏格式所需的战术决策优化。
+
+4. **高平局率**：许多对局以平局结束，尤其是在 center_mountains.csv（防守地形）以及表现较差的 Bot 之间。这表明游戏的战略深度与防守可行性。
+
+5. **地图影响**：AdvancedBot 在 beginner.csv 与 corner_points.csv 上主导（100% 胜率），而 MediumBot 在 funnel_point.csv 上表现更佳。
+
+**值得注意的观察：**
+- AdvancedBot 在 4 张地图中的 3 张上从未落败
+- 实力层次清晰：AdvancedBot > MediumBot > SimpleBot/Claude Haiku
+- Center mountains 地图产生最多平局（防守地形优势）
+
+---
+
+## 版本 0.1.1
+
+### 锦标赛 #1 - 2025 年 12 月 29 日
+
+**配置：**
+- **每组对阵对局数：** 每对 Bot 8 局（每张地图每方 1 局）
+- **地图池模式：** 全部地图均对战
+- **起始 ELO：** 1500
+- **Bot：** 8 名参赛者（3 个规则 Bot，5 个 LLM 驱动）
+
+**使用的地图：**
+
+<div style={{display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center', marginBottom: '20px'}}>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/beginner.png" alt="Beginner Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>beginner.csv</strong><br/>6×6 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/funnel_point.png" alt="Funnel Point Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>funnel_point.csv</strong><br/>13×11 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/center_mountains.png" alt="Center Mountains Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>center_mountains.csv</strong><br/>18×18 • 2 名玩家</p>
+  </div>
+  <div style={{textAlign: 'center'}}>
+    <img src="/img/maps/corner_points.png" alt="Corner Points Map" style={{width: '150px', height: '150px', borderRadius: '8px', border: '2px solid #444'}} />
+    <p><strong>corner_points.csv</strong><br/>12×10 • 2 名玩家</p>
+  </div>
+</div>
+
+**参赛者：**
+- SimpleBot（规则）
+- MediumBot（规则）
+- AdvancedBot（规则）
+- Claude Haiku 4.5（claude-haiku-4-5-20251001）
+- Claude Sonnet 4.5（claude-sonnet-4-5-20250929）
+- ChatGPT 5 Mini（gpt-5-mini-2025-08-07）
+- Gemini 2.0 Flash（gemini-2.0-flash）
+- Gemini 3.0 Flash（gemini-3-flash-preview）
+
+#### 最终排名
+
+| 排名 | Bot 名称 | 胜 | 负 | 平 | 总对局 | 胜率 | ELO | ELO 变化 |
+|------|----------|------|--------|-------|-------------|----------|-----|------------|
+| 🥇 1 | AdvancedBot | 34 | 1 | 21 | 56 | 60.7% | 1702 | +202 |
+| 🥈 2 | Gemini 3.0 Flash | 33 | 4 | 19 | 56 | 58.9% | 1646 | +146 |
+| 🥉 3 | MediumBot | 26 | 8 | 22 | 56 | 46.4% | 1618 | +118 |
+| 4 | Claude Sonnet 4.5 | 19 | 13 | 24 | 56 | 33.9% | 1508 | +8 |
+| 5 | SimpleBot | 1 | 20 | 35 | 56 | 1.8% | 1410 | -90 |
+| 6 | Claude Haiku 4.5 | 3 | 22 | 31 | 56 | 5.4% | 1389 | -111 |
+| 7 | ChatGPT 5 Mini | 2 | 22 | 32 | 56 | 3.6% | 1386 | -114 |
+| 8 | Gemini 2.0 Flash | 0 | 28 | 28 | 56 | 0.0% | 1341 | -159 |
+
+#### 交手结果
+
+| 对阵 | 胜 | 负 | 平 | 备注 |
+|---------|------|--------|-------|-------|
+| AdvancedBot vs Gemini 3.0 Flash | 4 | 0 | 4 | AdvancedBot 不败 |
+| AdvancedBot vs MediumBot | 5 | 1 | 2 | AdvancedBot 主导 |
+| AdvancedBot vs Claude Sonnet 4.5 | 5 | 0 | 3 | 完全压制 |
+| Gemini 3.0 Flash vs MediumBot | 3 | 0 | 5 | Gemini 略胜 |
+| Gemini 3.0 Flash vs Claude Sonnet 4.5 | 4 | 0 | 4 | Gemini 更强 |
+| MediumBot vs Claude Sonnet 4.5 | 4 | 0 | 4 | MediumBot 全胜 |
+| Claude Sonnet 4.5 vs Claude Haiku 4.5 | 5 | 0 | 3 | Sonnet 压制 Haiku |
+| Claude Sonnet 4.5 vs ChatGPT 5 Mini | 4 | 0 | 4 | Sonnet 略胜 GPT |
+| Claude Sonnet 4.5 vs Gemini 2.0 Flash | 6 | 0 | 2 | Sonnet 横扫 |
+| Claude Haiku 4.5 vs ChatGPT 5 Mini | 0 | 0 | 8 | 完全僵持 |
+| Gemini 2.0 Flash vs SimpleBot | 0 | 0 | 8 | 全部平局 |
+
+#### 分地图表现
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/beginner.png" alt="Beginner Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### beginner.csv（6×6）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 14 | 0 | 0 |
+| Gemini 3.0 Flash | 12 | 2 | 0 |
+| Claude Sonnet 4.5 | 7 | 5 | 2 |
+| MediumBot | 6 | 4 | 4 |
+| ChatGPT 5 Mini | 2 | 8 | 4 |
+| Claude Haiku 4.5 | 2 | 8 | 4 |
+| SimpleBot | 1 | 8 | 5 |
+| Gemini 2.0 Flash | 0 | 9 | 5 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/funnel_point.png" alt="Funnel Point Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### funnel_point.csv（13×11）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| Gemini 3.0 Flash | 11 | 1 | 2 |
+| MediumBot | 9 | 1 | 4 |
+| Claude Sonnet 4.5 | 8 | 5 | 1 |
+| AdvancedBot | 4 | 1 | 9 |
+| Claude Haiku 4.5 | 1 | 6 | 7 |
+| SimpleBot | 0 | 6 | 8 |
+| ChatGPT 5 Mini | 0 | 6 | 8 |
+| Gemini 2.0 Flash | 0 | 7 | 7 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/center_mountains.png" alt="Center Mountains Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### center_mountains.csv（18×18）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 4 | 0 | 10 |
+| Claude Sonnet 4.5 | 3 | 0 | 11 |
+| Gemini 3.0 Flash | 2 | 0 | 12 |
+| MediumBot | 2 | 1 | 11 |
+| SimpleBot | 0 | 1 | 13 |
+| ChatGPT 5 Mini | 0 | 2 | 12 |
+| Claude Haiku 4.5 | 0 | 2 | 12 |
+| Gemini 2.0 Flash | 0 | 5 | 9 |
+
+</div>
+</div>
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'flex-start'}}>
+<img src="/img/maps/corner_points.png" alt="Corner Points Map" style={{width: '80px', height: '80px', borderRadius: '4px', border: '1px solid #444'}} />
+<div>
+
+##### corner_points.csv（12×10）
+
+| Bot | 胜 | 负 | 平 |
+|-----|------|--------|-------|
+| AdvancedBot | 12 | 0 | 2 |
+| MediumBot | 9 | 2 | 3 |
+| Gemini 3.0 Flash | 8 | 1 | 5 |
+| Claude Sonnet 4.5 | 1 | 3 | 10 |
+| SimpleBot | 0 | 5 | 9 |
+| ChatGPT 5 Mini | 0 | 6 | 8 |
+| Claude Haiku 4.5 | 0 | 6 | 8 |
+| Gemini 2.0 Flash | 0 | 7 | 7 |
+
+</div>
+</div>
+
+#### LLM Token 用量
+
+| 模型 | 输入 Token | 输出 Token | 总 Token | 对局数 |
+|-------|-------------|---------------|--------------|-------|
+| Gemini 3.0 Flash | 24,174,240 | 1,295,618 | 25,469,858 | 58 |
+| ChatGPT 5 Mini | 13,899,718 | 4,508,521 | 18,408,239 | 57 |
+| Claude Sonnet 4.5 | 16,585,568 | 695,199 | 17,280,767 | 56 |
+| Claude Haiku 4.5 | 16,116,414 | 552,455 | 16,668,869 | 56 |
+| Gemini 2.0 Flash | 12,057,436 | 402,555 | 12,459,991 | 56 |
+
+#### 分析
+
+**关键发现：**
+
+1. **AdvancedBot 保持主导**：胜率 60.7%，ELO +202，AdvancedBot 证明其复杂策略即使面对更大、更多样的参赛阵容依然有效。
+
+2. **Gemini 3.0 Flash 成为顶级 LLM**：Gemini 3.0 Flash 取得 58.9% 的出色胜率（ELO +146），成为首个进入前三的 LLM Bot。它对所有其他 LLM Bot 保持不败。
+
+3. **Claude Sonnet 4.5 展现潜力**：胜率 33.9%，Claude Sonnet 显著优于其他 Claude 与 OpenAI 模型，展现出比 Haiku 更强的战术推理能力。
+
+4. **LLM 层级分化**：LLM 之间出现清晰的表现层级：Gemini 3.0 Flash（顶级）、Claude Sonnet 4.5（中级），以及 Claude Haiku/ChatGPT 5 Mini/Gemini 2.0 Flash（底层）。
+
+5. **地图特定模式**：
+   - **beginner.csv**：结果明确，平局少——快节奏战斗有利于激进 Bot
+   - **center_mountains.csv**：极高平局率（多数 Bot 达 75%+）——防守地形导致僵持
+   - **funnel_point.csv**：Gemini 3.0 Flash 与 MediumBot 表现出色，分别取得 11 胜与 9 胜
+
+**值得注意的观察：**
+- AdvancedBot 唯一的失利来自 MediumBot（56 局中的 1 局）
+- Gemini 2.0 Flash 在所有对阵中 0 胜——唯一没有胜利的 Bot
+- Claude Haiku 4.5 vs ChatGPT 5 Mini 结果为 8 平——完全僵持
+- Token 效率：Claude 模型每局约使用 300K token，ChatGPT 约 323K 每局
+
+---
+
+## 如何贡献结果
+
+你运行过锦标赛吗？与社区分享你的结果！
+
+1. 使用 `scripts/tournament.py` 运行锦标赛
+2. 保存结果（CSV/JSON 文件）
+3. 提交包含你结果的 pull request
+4. 附上回放文件以供验证
+
+## 洞察与分析
+
+### 策略模式
+
+随着锦标赛完成，我们将分析：
+- 开局策略与单位编成
+- 经济与军事平衡
+- 成功的战术模式
+- 常见错误与陷阱
+
+### Bot 优势与劣势
+
+每种 Bot 类型有不同特点：
+- **SimpleBot**：可预测但稳定；会犯基础战略错误
+- **MediumBot**：比 SimpleBot 更有策略；使用协调战术与更好的单位购买
+- **AdvancedBot**：扩展 MediumBot，具备增强单位编成、山脉站位、远程战斗优先级与特殊能力使用
+- **MasterBot**：扩展 AdvancedBot，具备威胁图、按 HP 升序集火、HQ 狙击优先级与加速跟进
+- **MixedBot**：仅用于课程——每个 episode 采样 easy/hard 内部 Bot 用于 bootstrap 训练
+- **LLM Bot**：有创意但有时不可预测
+- **Model Bot**：经过优化但可能对训练条件过拟合
+
+### 分地图表现
+
+不同地图偏爱不同策略：
+- 小地图（6x6）：快速、激进打法
+- 中地图（10x10）：经济/军事平衡
+- 大地（24x24+）：长期战略与站位
+
+## 锦标赛档案
+
+所有锦标赛回放均已保存，可使用游戏的回放系统观看：
+
+```bash
+# Load a replay file
+python3 main.py --mode play --replay path/to/replay.json
+```
+
+回放文件包括：
+- 完整行动历史
+- 游戏元数据（Bot、地图、时长）
+- 可程序化分析
+
+## 未来锦标赛
+
+即将到来的锦标赛构想：
+- **地图多样性**：在不同尺寸与布局的地图上举行锦标赛
+- **专项竞赛**：经济向、战斗向、速通
+- **进化**：进化/改进模型版本的锦标赛
+- **人类 vs Bot**：与人类玩家的特别表演赛
+
+## 资源
+
+- [锦标赛系统指南](./tournament-system.md) - 技术文档
+- [实现状态](./implementation-status.md) - 当前功能
+- [入门指南](./intro.md) - 学习如何游玩
+
+---
+
+_最后更新：2025 年 12 月_

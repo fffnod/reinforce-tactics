@@ -7,6 +7,19 @@ It is deployed at [reinforcetactics.com](https://reinforcetactics.com).
 > Contributor-facing notes (roadmap, internal code reviews, dev guides) live in
 > the repo-level [`docs/`](../docs/) directory — see [`docs/README.md`](../docs/README.md).
 
+## Bilingual layout
+
+| Path | Language |
+|------|----------|
+| [`docs-site/docs/`](docs/) | English user docs (Docusaurus source) |
+| [`docs-site/zh/`](zh/) | Simplified Chinese translations (parallel tree) |
+| [`docs/`](../docs/) | English contributor docs |
+| [`docs/zh/`](../docs/zh/) | Simplified Chinese contributor docs |
+
+The `zh/` trees mirror the English markdown/mdx content for bilingual reading.
+They are **not** yet wired into Docusaurus i18n locale routing; enable that
+separately if you want a language switcher on the live site.
+
 ## Installation
 
 ```bash
