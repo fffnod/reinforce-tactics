@@ -12,10 +12,23 @@
 
 ---
 
+## 学习指南
+
+面向**有编程基础、零 RL 背景**的循序渐进教程（概念 + 公式白话 + 本仓库实操）：
+
+| 入口 | 概述 |
+|------|------|
+| **[`learning-guide/README.md`](learning-guide/README.md)** | 策略类强化学习学习指南：00–17 章 + 术语表；主线为「玩游戏 → 短训 PPO → 评估 → 锦标赛/Bot」 |
+
+Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）见同目录 `14-`…`17-` 与 `glossary.md`。算法速查仍用 `algorithms/`；源码深潜用 `source-analysis/`。
+
+---
+
 ## 文档分类
 
 | 分类 | 子目录 / 前缀 | 用途 |
 |------|----------------|------|
+| **学习指南** | `learning-guide/` | 零基础 RL 长教程（章节体，Part A–D） |
 | **使用类** | `usage/` | 安装、启动、GUI 操作、训练命令、部署迁移等「怎么用」 |
 | **问题排查类** | `troubleshooting/` | 故障现象、根因、修复步骤、验证方法 |
 | **源代码分析类** | `source-analysis/` | 模块结构、关键调用链、设计取舍 |
@@ -24,6 +37,26 @@
 ---
 
 ## 索引表
+
+### 学习指南（learning-guide）
+
+| 文件 | 概述 | 状态 |
+|------|------|------|
+| [`learning-guide/README.md`](learning-guide/README.md) | 指南总目录、阅读路径、与 algorithms/docs 的关系 | 已写 |
+| [`learning-guide/00-how-to-use-this-guide.md`](learning-guide/00-how-to-use-this-guide.md) | 仓库地图、conda/extras、路径与截图约定 | 已写（Part A） |
+| [`learning-guide/01-why-rl-and-this-game.md`](learning-guide/01-why-rl-and-this-game.md) | 监督 vs RL、项目五支柱 | 已写（Part A） |
+| [`learning-guide/02-game-mechanics-as-mdp.md`](learning-guide/02-game-mechanics-as-mdp.md) | 规则→MDP；微动作 vs 回合；P2 双 Warrior | 已写（Part A） |
+| [`learning-guide/03-math-without-tears.md`](learning-guide/03-math-without-tears.md) | 期望、折扣回报、logπ、梯度与优势直觉 | 已写（Part A） |
+| [`learning-guide/04-gymnasium-and-sb3.md`](learning-guide/04-gymnasium-and-sb3.md) | Gymnasium/SB3/MaskablePPO、随机 step 实操 | 已写（Part B） |
+| [`learning-guide/05-first-train-ppo.md`](learning-guide/05-first-train-ppo.md) | 短训 PPO、产物、评估、常见失败 | 已写（Part B） |
+| [`learning-guide/06-observation-action-mask.md`](learning-guide/06-observation-action-mask.md) | 观察、非法动作、per-dim vs flat | 已写（Part B） |
+| [`learning-guide/07-rewards-and-shaping.md`](learning-guide/07-rewards-and-shaping.md) | 稀疏/稠密、势能塑形、kill-farm | 已写（Part B） |
+| [`learning-guide/08-curriculum-bootstrap.md`](learning-guide/08-curriculum-bootstrap.md) … [`13-…`](learning-guide/13-evaluation-elo-tournament.md) | Part C 算法专章 | 已写 |
+| [`learning-guide/14-scripted-bots-and-balance.md`](learning-guide/14-scripted-bots-and-balance.md) | 规则 Bot 梯子、平衡教训、短锦标赛 | 已写（Part D） |
+| [`learning-guide/15-llm-bots.md`](learning-guide/15-llm-bots.md) | LLM Bot、API Key、`[llm]` | 已写（Part D） |
+| [`learning-guide/16-dev-toolchain.md`](learning-guide/16-dev-toolchain.md) | pytest/ruff/mypy/pre-commit、git 作者 env | 已写（Part D） |
+| [`learning-guide/17-capstone-projects.md`](learning-guide/17-capstone-projects.md) | 综合课题 + 自检清单 | 已写（Part D） |
+| [`learning-guide/glossary.md`](learning-guide/glossary.md) | 中英术语表与延伸阅读 | 已写 |
 
 ### 使用类（usage）
 
@@ -40,6 +73,7 @@
 | 文件 | 概述 | 状态 |
 |------|------|------|
 | [`troubleshooting/chinese-font-display.md`](troubleshooting/chinese-font-display.md) | 切换中文后菜单乱码/方框：pygame-ce Windows SysFont 崩溃、改为直读 `msyh.ttc` 等字体文件的原因与修复 | 已写 |
+| [`troubleshooting/gui-replay-save-duplicates.md`](troubleshooting/gui-replay-save-duplicates.md) | GUI 终局自动存回放导致重复条目/按钮语义混乱；改为仅用户点「保存回放」才写入；与锦标赛 `save_replays` 区分 | 已写 |
 
 ### 源代码分析类（source-analysis）
 
@@ -99,7 +133,8 @@
 3. 本地运行 / 训练：[`usage/local-run-guide.md`](usage/local-run-guide.md)。
 4. 中文 UI / 字体：[`usage/chinese-i18n-coverage.md`](usage/chinese-i18n-coverage.md)、[`troubleshooting/chinese-font-display.md`](troubleshooting/chinese-font-display.md)。
 5. **熟悉架构 / 读代码**：从 [`source-analysis/overview.md`](source-analysis/overview.md) 进入。
-6. **学 RL 概念**：从 [`algorithms/overview.md`](algorithms/overview.md) 进入（零基础友好）。
+6. **学 RL 概念（速查）**：从 [`algorithms/overview.md`](algorithms/overview.md) 进入。
+7. **学 RL 全教程（章节体）**：从 [`learning-guide/README.md`](learning-guide/README.md) 进入。
 
 ---
 
@@ -108,7 +143,8 @@
 | 目标 | 顺序 |
 |------|------|
 | 建立项目整体概念 | [`source-analysis/overview.md`](source-analysis/overview.md) → core → app 或 bots → rl-gym-env |
-| 从零学本项目 RL | [`algorithms/overview.md`](algorithms/overview.md) → mdp → ppo → masking → reward → curriculum |
+| **从零学本项目 RL（完整教程）** | [`learning-guide/README.md`](learning-guide/README.md)（00→17） |
+| 从零学本项目 RL（速查卡） | [`algorithms/overview.md`](algorithms/overview.md) → mdp → ppo → masking → reward → curriculum |
 | 进阶训练器 | feudal / alphazero 算法文 + [`source-analysis/rl-advanced-trainers.md`](source-analysis/rl-advanced-trainers.md) |
 | 评测梯子 | [`algorithms/evaluation-and-elo.md`](algorithms/evaluation-and-elo.md) + [`source-analysis/tournament-system.md`](source-analysis/tournament-system.md) |
 

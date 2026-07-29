@@ -1,5 +1,6 @@
 """Game over screen."""
 
+import os
 from typing import Any
 
 import pygame
@@ -41,8 +42,20 @@ class GameOverMenu(Menu):
         self.add_option(lang.get("game_over.quit", "Quit"), lambda: "quit")
 
     def _save_replay(self) -> str | None:
-        """Save game replay."""
-        return self.game_state.save_replay_to_file()
+        """Save game replay when the user confirms (only write path for GUI).
+
+        Idempotent within one game-over screen: a second click reuses the
+        file already written instead of creating a near-duplicate.
+        """
+        existing = getattr(self.game_state, "last_replay_path", None)
+        if existing and os.path.isfile(existing):
+            print(f"📼 Replay already saved to {existing}")
+            return existing
+        path = self.game_state.save_replay_to_file()
+        if path:
+            self.game_state.last_replay_path = path  # type: ignore[attr-defined]
+            print(f"📼 Replay saved to {path}")
+        return path
 
     def _options_min_top(self) -> int:
         # Keep the options clear of the winner banner + underline + turn

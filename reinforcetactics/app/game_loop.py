@@ -121,12 +121,9 @@ class GameSession:  # pylint: disable=too-few-public-methods
         if self.game.game_over:
             return self._handle_game_over()
 
-        # Auto-save replay on mid-game quit
-        if self.game.action_history:
-            replay_path = self.game.save_replay_to_file()
-            if replay_path:
-                print(f"Replay saved to {replay_path}")
-
+        # Mid-game quit: do not auto-save replays. Replays are written only
+        # when the user chooses "Save Replay" on the game-over menu (or when
+        # tournament/eval pipelines call save_replay_to_file explicitly).
         return self._exit_reason
 
     def _handle_pause(self):
@@ -202,12 +199,8 @@ class GameSession:  # pylint: disable=too-few-public-methods
         """
         print(f"\n🎉 Game Over! Player {self.game.winner} wins!")
 
-        # Automatically save replay
-        replay_path = self.game.save_replay_to_file()
-        if replay_path:
-            print(f"📼 Replay saved to {replay_path}")
-
-        # Show game over screen
+        # Do not auto-save. User must choose "Save Replay" on GameOverMenu.
+        # (Tournament / eval code saves via its own config, not this path.)
         game_over_menu = GameOverMenu(self.game.winner, self.game, self.renderer.screen)
         result = game_over_menu.run()
 

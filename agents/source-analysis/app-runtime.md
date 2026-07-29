@@ -58,7 +58,7 @@
 | `main_menu` | 暂停或终局回主菜单 |
 | `new_game` 等 | 终局菜单选择（由 `GameOverMenu` 决定） |
 
-中途退出若有 `action_history` 会尝试 `save_replay_to_file()`。
+中途退出**不会**自动写回放。GUI 仅在结算菜单用户选择「保存回放」时写入（见 [`../troubleshooting/gui-replay-save-duplicates.md`](../troubleshooting/gui-replay-save-duplicates.md)）。锦标赛批量回放由 `save_replays` 配置控制，不走本路径。
 
 ### `InputHandler`
 

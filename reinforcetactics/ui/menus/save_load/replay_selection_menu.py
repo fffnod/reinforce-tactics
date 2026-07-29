@@ -58,10 +58,23 @@ class ReplaySelectionMenu(Menu):
             if os.path.exists(search_dir):
                 # Walk through directory tree to find all .json replay files
                 for root, _, files in os.walk(search_dir):
+                    # LLM conversation dumps live under llm_logs/ and use
+                    # names like game_YYYYMMDD_*.json — they are not
+                    # playable replays (no game_info / actions).
+                    root_norm = root.replace("\\", "/").lower()
+                    if "/llm_logs" in f"/{root_norm}/" or root_norm.endswith("llm_logs"):
+                        continue
                     for f in files:
-                        if f.endswith(".json") and ("replay" in f.lower() or "game_" in f.lower()):
+                        if not f.endswith(".json"):
+                            continue
+                        name_l = f.lower()
+                        # Prefer explicit replay_* names; also accept
+                        # tournament game_*.json under a replays/ folder.
+                        under_replays = "/replays/" in f"/{root_norm}/" or root_norm.endswith("replays")
+                        if "replay" in name_l or (under_replays and name_l.startswith("game_")):
                             filepath = os.path.join(root, f)
-                            all_replays.append(filepath)
+                            if self._looks_like_replay_file(filepath):
+                                all_replays.append(filepath)
 
         # Sort by modification time (newest first)
         all_replays.sort(key=lambda f: os.path.getmtime(f), reverse=True)
@@ -70,6 +83,22 @@ class ReplaySelectionMenu(Menu):
         # Load metadata for each replay
         for filepath in self.replay_files:
             self._load_replay_metadata(filepath)
+
+    @staticmethod
+    def _looks_like_replay_file(filepath: str) -> bool:
+        """Return True if JSON has the minimal replay schema (game_info + actions)."""
+        try:
+            with open(filepath, encoding="utf-8") as f:
+                data = json.load(f)
+            if not isinstance(data, dict):
+                return False
+            if "game_info" not in data:
+                return False
+            # Official replays store the action log as ``actions``; older
+            # dumps sometimes used ``action_history``.
+            return "actions" in data or "action_history" in data
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            return False
 
     def _load_replay_metadata(self, filepath: str) -> None:
         """Load metadata from a replay file."""
