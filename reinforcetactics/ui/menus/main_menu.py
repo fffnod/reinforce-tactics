@@ -41,9 +41,12 @@ class MainMenu(Menu):
         self.add_option(lang.get("main_menu.quit", "Quit"), self._quit)
 
     def _refresh_options(self) -> None:
-        """Rebuild options with current language strings."""
+        """Rebuild options with current language strings and matching fonts."""
+        self.lang = get_language()
+        self.refresh_fonts()
         self.clear_options()
         self.title = self._get_title()
+        self.footer_hint = self.lang.get("main_menu.menu_hint", "Arrows: Move   Enter: Select   Esc: Quit")
         self._setup_options()
 
     def _new_game(self) -> dict[str, Any] | None:

@@ -173,6 +173,86 @@ TRANSLATIONS = {
         "map_editor.shortcuts.open": "Ctrl+O: Open Map",
         "map_editor.shortcuts.grid": "G: Toggle Grid",
         "map_editor.shortcuts.esc": "Esc: Exit",
+        # Settings extras
+        "settings.graphics": "Graphics",
+        "settings.units": "Unit Settings",
+        "settings.api_keys": "LLM API Keys",
+        "settings.sound_nyi": "Sound (not implemented)",
+        # Graphics menu
+        "graphics.title": "Graphics Settings",
+        "graphics.not_set": "(not set)",
+        "graphics.not_set_auto": "(auto)",
+        "graphics.animation_path": "Animation Sheets Path",
+        "graphics.unit_path": "Static Sprites Path",
+        "graphics.tile_path": "Tile Sprites Path",
+        "graphics.edit_unit_path": "Edit Unit Sprites Path",
+        "graphics.edit_animation_path": "Edit Animation Sprites Path",
+        "graphics.edit_tile_path": "Edit Tile Sprites Path",
+        "graphics.path_hint": "Enter the path to your sprites folder",
+        "graphics.path_example": "Example: images/sprites/units",
+        "graphics.press_enter": "Press ENTER to save, ESC to cancel",
+        "graphics.paste_hint": "Ctrl+V to paste from clipboard",
+        # Units settings
+        "units.title": "Unit Settings",
+        "units.enable_all": "Enable All Units",
+        "units.disable_all": "Disable All Units",
+        "units.basic_only": "Basic Units Only (W,M,C,A)",
+        "units.advanced_only": "Advanced Units Only (K,R,S,B)",
+        # API keys
+        "api_keys.title": "LLM API Keys Configuration",
+        "api_keys.instructions": "Enter your API keys for LLM providers (leave blank to use environment variables)",
+        # Player config extras
+        "player_config.fog_of_war": "Fog of War",
+        "player_config.game_options": "Game Options",
+        "player_config.bot_simple": "Simple Bot",
+        "player_config.bot_medium": "Medium Bot",
+        "player_config.bot_advanced": "Advanced Bot",
+        "player_config.bot_openai": "OpenAI (GPT)",
+        "player_config.bot_claude": "Claude",
+        "player_config.bot_gemini": "Gemini",
+        "player_config.bot_model": "Custom Model",
+        "player_config.no_api_key": "(No API Key)",
+        "player_config.browse": "Browse...",
+        # In-game unit action menu
+        "unit_action.title": "Unit Actions",
+        "unit_action.attack": "Attack (A)",
+        "unit_action.paralyze": "Paralyze (P)",
+        "unit_action.heal": "Heal (H)",
+        "unit_action.cure": "Cure (C)",
+        "unit_action.haste": "Haste (T)",
+        "unit_action.defence_buff": "Defence Buff (D)",
+        "unit_action.attack_buff": "Attack Buff (B)",
+        "unit_action.capture": "Capture (S)",
+        "unit_action.cancel_move": "Cancel Move (M)",
+        "unit_action.wait": "Wait / End (W)",
+        # Unit purchase
+        "unit_purchase.title": "Purchase Unit",
+        "unit_purchase.cost_suffix": "g",
+        # Extra unit names
+        "archer": "Archer",
+        "knight": "Knight",
+        "rogue": "Rogue",
+        "sorcerer": "Sorcerer",
+        # Tooltips / HUD status
+        "tooltip.can_move": "Can Move",
+        "tooltip.can_act": "Can Act",
+        "tooltip.paralyzed": "Paralyzed ({turns})",
+        "tooltip.hp": "HP: {current}/{max}",
+        "tooltip.atk_def": "ATK: {atk}  DEF: {defence}",
+        "tooltip.mov": "MOV: {mov}",
+        "tooltip.player_unit": "{name} (P{player})",
+        # Misc menus
+        "game_over.turns": "Turns: {turns}",
+        "pause.main_menu_confirm_title": "Return to Main Menu",
+        "pause.main_menu_confirm_msg": "Unsaved progress will be lost. Continue?",
+        "load_game.no_saves": "No saved games found",
+        "replay.title": "Select Replay",
+        "replay.no_replays": "No replays found",
+        "common.disabled": "OFF",
+        "common.enabled": "ON",
+        "common.save": "Save",
+        "dialog.confirm_hint": "Press Y to confirm, N or ESC to cancel",
+        "new_game.random_map": "Random Map",
     },
     "french": {
         # Main Menu
@@ -655,7 +735,7 @@ TRANSLATIONS = {
     "chinese": {
         # Main Menu
         "main_title": "REINFORCE TACTICS",
-        "main_subtitle": "回合制策略游戏 with RL",
+        "main_subtitle": "基于强化学习的回合制策略游戏",
         "menu_1v1_human": "1v1 (人类 vs 人类)",
         "menu_1v1_computer": "1v1 (人类 vs 电脑)",
         "menu_replay": "观看回放",
@@ -707,10 +787,124 @@ TRANSLATIONS = {
         "player_config.type_human": "人类",
         "player_config.type_computer": "电脑",
         "player_config.difficulty": "难度",
-        "player_config.difficulty_simple": "SimpleBot",
-        "player_config.difficulty_normal": "NormalBot (即将推出)",
-        "player_config.difficulty_hard": "HardBot (即将推出)",
+        "player_config.difficulty_simple": "简单机器人",
+        "player_config.difficulty_normal": "普通机器人（即将推出）",
+        "player_config.difficulty_hard": "困难机器人（即将推出）",
         "player_config.start_game": "开始游戏",
+        "player_config.fog_of_war": "战争迷雾",
+        "player_config.game_options": "游戏选项",
+        "player_config.bot_simple": "简单机器人",
+        "player_config.bot_medium": "中等机器人",
+        "player_config.bot_advanced": "高级机器人",
+        "player_config.bot_openai": "OpenAI (GPT)",
+        "player_config.bot_claude": "Claude",
+        "player_config.bot_gemini": "Gemini",
+        "player_config.bot_model": "自定义模型",
+        "player_config.no_api_key": "（无 API Key）",
+        "player_config.browse": "浏览…",
+        # Settings extras
+        "settings.graphics": "图形",
+        "settings.units": "单位设置",
+        "settings.api_keys": "LLM API 密钥",
+        "settings.sound_nyi": "声音（未实现）",
+        # Graphics
+        "graphics.title": "图形设置",
+        "graphics.not_set": "（未设置）",
+        "graphics.not_set_auto": "（自动）",
+        "graphics.animation_path": "动画精灵表路径",
+        "graphics.unit_path": "静态精灵路径",
+        "graphics.tile_path": "地形精灵路径",
+        "graphics.edit_unit_path": "编辑单位精灵路径",
+        "graphics.edit_animation_path": "编辑动画精灵路径",
+        "graphics.edit_tile_path": "编辑地形精灵路径",
+        "graphics.path_hint": "输入精灵文件夹路径",
+        "graphics.path_example": "示例: images/sprites/units",
+        "graphics.press_enter": "回车保存，ESC 取消",
+        "graphics.paste_hint": "Ctrl+V 从剪贴板粘贴",
+        # Units settings
+        "units.title": "单位设置",
+        "units.enable_all": "启用全部单位",
+        "units.disable_all": "禁用全部单位",
+        "units.basic_only": "仅基础单位 (W,M,C,A)",
+        "units.advanced_only": "仅高级单位 (K,R,S,B)",
+        # API keys
+        "api_keys.title": "LLM API 密钥配置",
+        "api_keys.instructions": "输入各 LLM 提供商的 API 密钥（留空则使用环境变量）",
+        # In-game unit action menu
+        "unit_action.title": "单位行动",
+        "unit_action.attack": "攻击 (A)",
+        "unit_action.paralyze": "麻痹 (P)",
+        "unit_action.heal": "治疗 (H)",
+        "unit_action.cure": "驱散 (C)",
+        "unit_action.haste": "加速 (T)",
+        "unit_action.defence_buff": "防御强化 (D)",
+        "unit_action.attack_buff": "攻击强化 (B)",
+        "unit_action.capture": "占领 (S)",
+        "unit_action.cancel_move": "取消移动 (M)",
+        "unit_action.wait": "待命 / 结束 (W)",
+        # Unit purchase
+        "unit_purchase.title": "购买单位",
+        "unit_purchase.cost_suffix": "金",
+        # Extra unit names
+        "archer": "弓箭手",
+        "knight": "骑士",
+        "rogue": "刺客",
+        "sorcerer": "术士",
+        # Tooltips
+        "tooltip.can_move": "可移动",
+        "tooltip.can_act": "可行动",
+        "tooltip.paralyzed": "麻痹（{turns}）",
+        "tooltip.hp": "生命: {current}/{max}",
+        "tooltip.atk_def": "攻击: {atk}  防御: {defence}",
+        "tooltip.mov": "移动: {mov}",
+        "tooltip.player_unit": "{name}（玩家{player}）",
+        # Misc
+        "game_over.turns": "回合数: {turns}",
+        "pause.main_menu_confirm_title": "返回主菜单",
+        "pause.main_menu_confirm_msg": "未保存的进度将丢失。是否继续？",
+        "load_game.no_saves": "未找到存档",
+        "replay.title": "选择回放",
+        "replay.no_replays": "未找到回放",
+        "common.disabled": "关",
+        "common.enabled": "开",
+        "common.save": "保存",
+        "dialog.confirm_hint": "按 Y 确认，按 N 或 ESC 取消",
+        "new_game.random_map": "随机地图",
+        # Map Editor
+        "map_editor.title": "地图编辑器",
+        "map_editor.new_map": "新建地图",
+        "map_editor.edit_map": "编辑已有地图",
+        "map_editor.save": "保存地图",
+        "map_editor.load": "加载地图",
+        "map_editor.new_map_dialog.title": "创建新地图",
+        "map_editor.new_map_dialog.width": "宽度:",
+        "map_editor.new_map_dialog.height": "高度:",
+        "map_editor.new_map_dialog.players": "玩家数:",
+        "map_editor.new_map_dialog.create": "创建",
+        "map_editor.new_map_dialog.min_size": "最小尺寸: {size}x{size}",
+        "map_editor.tile_palette.title": "图块面板",
+        "map_editor.tile_palette.terrain": "地形",
+        "map_editor.tile_palette.structures": "建筑",
+        "map_editor.tile_palette.neutral": "中立",
+        "map_editor.tile_palette.player": "玩家 {number}",
+        "map_editor.canvas.grid": "网格: 开",
+        "map_editor.canvas.grid_off": "网格: 关",
+        "map_editor.canvas.coordinates": "X: {x}, Y: {y}",
+        "map_editor.tools.paint": "绘制",
+        "map_editor.tools.erase": "擦除",
+        "map_editor.tools.fill": "填充",
+        "map_editor.save_dialog.title": "保存地图",
+        "map_editor.save_dialog.filename": "文件名:",
+        "map_editor.save_dialog.overwrite": "文件已存在。是否覆盖？",
+        "map_editor.validation.no_hq": "每个玩家必须恰好有一个总部",
+        "map_editor.validation.min_size": "地图至少为 {size}x{size}",
+        "map_editor.validation.invalid_hq": "玩家 {player} 需要恰好一个总部",
+        "map_editor.shortcuts.title": "快捷键",
+        "map_editor.shortcuts.save": "Ctrl+S: 保存",
+        "map_editor.shortcuts.new": "Ctrl+N: 新建地图",
+        "map_editor.shortcuts.open": "Ctrl+O: 打开地图",
+        "map_editor.shortcuts.grid": "G: 切换网格",
+        "map_editor.shortcuts.esc": "Esc: 退出",
         # Save/Load Game
         "save_game.title": "保存游戏",
         "save_game.enter_name": "输入存档名称：",
@@ -835,10 +1029,24 @@ class Language:
 
         if normalized in TRANSLATIONS:
             self.current_language = normalized
+            # Fonts are cached without language in the key; CJK vs Latin must
+            # re-resolve after a language switch (see utils.fonts).
+            try:
+                from reinforcetactics.utils.fonts import clear_font_cache
+
+                clear_font_cache()
+            except Exception:  # pylint: disable=broad-except
+                pass
             print(f"✅ Language set to: {LANGUAGE_NAMES.get(normalized, normalized)}")
             return True
         print(f"❌ Language '{language}' not available, using English")
         self.current_language = "english"
+        try:
+            from reinforcetactics.utils.fonts import clear_font_cache
+
+            clear_font_cache()
+        except Exception:  # pylint: disable=broad-except
+            pass
         return False
 
     def get(self, key: str, default: str | None = None) -> str:

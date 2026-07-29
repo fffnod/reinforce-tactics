@@ -1345,7 +1345,8 @@ class ClaudeBot(LLMBot):  # pylint: disable=too-few-public-methods
         if self.temperature is not None:
             request_kwargs["temperature"] = self.temperature
 
-        response = client.messages.create(**request_kwargs)
+        # Anthropic SDK overloads are too narrow for a dynamic kwargs dict.
+        response = client.messages.create(**request_kwargs)  # type: ignore[call-overload]
 
         # Capture token usage from Claude API response
         self._last_input_tokens = response.usage.input_tokens

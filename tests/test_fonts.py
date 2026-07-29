@@ -48,11 +48,11 @@ def test_get_font_various_sizes(pygame_init):
 
 
 def test_get_available_fonts_returns_list(pygame_init):
-    """Test that _get_available_fonts returns a list."""
+    """Test that _get_available_fonts returns a list (may be empty if SysFont is broken)."""
     result = _get_available_fonts()
     assert isinstance(result, list)
-    # Should have at least one font available
-    assert len(result) > 0
+    # On healthy systems the list is non-empty; on some Windows + pygame-ce
+    # builds the scanner raises and we return []. Either is acceptable.
 
 
 def test_font_renders_text(pygame_init):
@@ -68,6 +68,26 @@ def test_font_renders_text(pygame_init):
     korean_surface = font.render("안녕하세요", True, (255, 255, 255))
     assert isinstance(korean_surface, pygame.Surface)
     assert korean_surface.get_width() > 0
+
+
+def test_chinese_language_uses_cjk_capable_font(pygame_init):
+    """Chinese UI text must render with a real width (not crash / empty)."""
+    from reinforcetactics.utils.fonts import clear_font_cache, get_font
+    from reinforcetactics.utils.language import get_language
+
+    lang = get_language()
+    previous = lang.get_current_language()
+    try:
+        assert lang.set_language("chinese")
+        clear_font_cache()
+        font = get_font(24)
+        surface = font.render("中文设置语言", True, (255, 255, 255))
+        assert isinstance(surface, pygame.Surface)
+        assert surface.get_width() > 0
+        assert surface.get_height() > 0
+    finally:
+        lang.set_language(previous)
+        clear_font_cache()
 
 
 def test_font_initialization_without_pygame():

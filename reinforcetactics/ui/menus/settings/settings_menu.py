@@ -39,16 +39,20 @@ class SettingsMenu(Menu):
         self.add_option(lang.get("settings.language", "Language"), self._change_language)
         self.add_option(lang.get("settings.graphics", "Graphics"), self._configure_graphics)
         self.add_option(lang.get("settings.units", "Unit Settings"), self._configure_units)
-        self.add_option(f"{lang.get('settings.sound', 'Sound')} (not implemented)", self._toggle_sound)
-        fullscreen_status = "ON" if self._fullscreen else "OFF"
+        self.add_option(lang.get("settings.sound_nyi", "Sound (not implemented)"), self._toggle_sound)
+        on_label = lang.get("common.enabled", "ON")
+        off_label = lang.get("common.disabled", "OFF")
+        fullscreen_status = on_label if self._fullscreen else off_label
         self.add_option(f"{lang.get('settings.fullscreen', 'Fullscreen')}: {fullscreen_status}", self._toggle_fullscreen)
         self.add_option(lang.get("settings.api_keys", "LLM API Keys"), self._configure_api_keys)
         self.add_option(lang.get("common.back", "Back"), lambda: None)
 
     def _refresh_options(self) -> None:
-        """Rebuild options with current language strings."""
+        """Rebuild options with current language strings and matching fonts."""
+        self.lang = get_language()
+        self.refresh_fonts()
         self.clear_options()
-        self.title = get_language().get("settings.title", "Settings")
+        self.title = self.lang.get("settings.title", "Settings")
         self._setup_options()
 
     def _change_language(self) -> str:

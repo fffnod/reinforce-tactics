@@ -8,6 +8,7 @@ from reinforcetactics.constants import TILE_SIZE
 from reinforcetactics.game.mechanics import GameMechanics
 from reinforcetactics.ui import theme, widgets
 from reinforcetactics.utils.fonts import get_display_font, get_font
+from reinforcetactics.utils.language import get_language
 
 
 class UnitActionMenu:
@@ -26,6 +27,7 @@ class UnitActionMenu:
         self.game_state = game_state
         self.unit = unit
         self.running = True
+        self.lang = get_language()
 
         # Colors (from shared theme)
         self.bg_color = theme.PANEL_BG
@@ -50,6 +52,10 @@ class UnitActionMenu:
         # Calculate menu position and size
         self._calculate_menu_rect()
 
+    def _action_label(self, key: str, default: str) -> str:
+        """Localized label for an action option."""
+        return self.lang.get(key, default)
+
     def _calculate_available_actions(self) -> list[dict[str, Any]]:
         """
         Calculate which actions are available for this unit.
@@ -64,55 +70,125 @@ class UnitActionMenu:
 
         # Attack - available if attackable enemies exist
         if attackable_enemies:
-            actions.append({"name": "Attack (A)", "key": "a", "type": "attack", "targets": attackable_enemies})
+            actions.append(
+                {
+                    "name": self._action_label("unit_action.attack", "Attack (A)"),
+                    "key": "a",
+                    "type": "attack",
+                    "targets": attackable_enemies,
+                }
+            )
 
         # Paralyze - only for Mages with adjacent enemies
         if self.unit.type == "M":
             adjacent_enemies = GameMechanics.get_adjacent_enemies(self.unit, self.game_state.units)
             if adjacent_enemies:
-                actions.append({"name": "Paralyze (P)", "key": "p", "type": "paralyze", "targets": adjacent_enemies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.paralyze", "Paralyze (P)"),
+                        "key": "p",
+                        "type": "paralyze",
+                        "targets": adjacent_enemies,
+                    }
+                )
 
         # Heal and Cure - only for Clerics
         if self.unit.type == "C":
             # Heal - damaged allies within CLERIC_HEAL_RANGE
             healable_allies = GameMechanics.get_healable_allies(self.unit, self.game_state.units)
             if healable_allies:
-                actions.append({"name": "Heal (H)", "key": "h", "type": "heal", "targets": healable_allies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.heal", "Heal (H)"),
+                        "key": "h",
+                        "type": "heal",
+                        "targets": healable_allies,
+                    }
+                )
 
             # Cure - paralyzed allies within CLERIC_HEAL_RANGE
             curable_allies = GameMechanics.get_curable_allies(self.unit, self.game_state.units)
             if curable_allies:
-                actions.append({"name": "Cure (C)", "key": "c", "type": "cure", "targets": curable_allies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.cure", "Cure (C)"),
+                        "key": "c",
+                        "type": "cure",
+                        "targets": curable_allies,
+                    }
+                )
 
         # Haste - only for Sorcerers with ability off cooldown
         if self.unit.type == "S" and self.unit.can_use_haste():
             hasteable_allies = GameMechanics.get_hasteable_allies(self.unit, self.game_state.units)
             if hasteable_allies:
-                actions.append({"name": "Haste (T)", "key": "t", "type": "haste", "targets": hasteable_allies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.haste", "Haste (T)"),
+                        "key": "t",
+                        "type": "haste",
+                        "targets": hasteable_allies,
+                    }
+                )
 
         # Defence Buff - only for Sorcerers with ability off cooldown
         if self.unit.type == "S" and self.unit.can_use_defence_buff():
             buffable_allies = GameMechanics.get_defence_buffable_allies(self.unit, self.game_state.units)
             if buffable_allies:
-                actions.append({"name": "Defence Buff (D)", "key": "d", "type": "defence_buff", "targets": buffable_allies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.defence_buff", "Defence Buff (D)"),
+                        "key": "d",
+                        "type": "defence_buff",
+                        "targets": buffable_allies,
+                    }
+                )
 
         # Attack Buff - only for Sorcerers with ability off cooldown
         if self.unit.type == "S" and self.unit.can_use_attack_buff():
             buffable_allies = GameMechanics.get_attack_buffable_allies(self.unit, self.game_state.units)
             if buffable_allies:
-                actions.append({"name": "Attack Buff (B)", "key": "b", "type": "attack_buff", "targets": buffable_allies})
+                actions.append(
+                    {
+                        "name": self._action_label("unit_action.attack_buff", "Attack Buff (B)"),
+                        "key": "b",
+                        "type": "attack_buff",
+                        "targets": buffable_allies,
+                    }
+                )
 
         # Capture - only if on a capturable structure
         tile = self.game_state.grid.get_tile(self.unit.x, self.unit.y)
         if tile.is_capturable() and tile.player != self.unit.player:
-            actions.append({"name": "Capture (S)", "key": "s", "type": "capture", "targets": None})
+            actions.append(
+                {
+                    "name": self._action_label("unit_action.capture", "Capture (S)"),
+                    "key": "s",
+                    "type": "capture",
+                    "targets": None,
+                }
+            )
 
         # Cancel Move - only if unit has moved this turn
         if self.unit.has_moved:
-            actions.append({"name": "Cancel Move (M)", "key": "m", "type": "cancel_move", "targets": None})
+            actions.append(
+                {
+                    "name": self._action_label("unit_action.cancel_move", "Cancel Move (M)"),
+                    "key": "m",
+                    "type": "cancel_move",
+                    "targets": None,
+                }
+            )
 
         # Wait/End Turn - always available
-        actions.append({"name": "Wait/End Turn (W)", "key": "w", "type": "wait", "targets": None})
+        actions.append(
+            {
+                "name": self._action_label("unit_action.wait", "Wait / End (W)"),
+                "key": "w",
+                "type": "wait",
+                "targets": None,
+            }
+        )
 
         return actions
 
@@ -226,7 +302,7 @@ class UnitActionMenu:
         pygame.draw.rect(screen, self.border_color, self.menu_rect, width=2, border_radius=10)
 
         # Draw title
-        title = "Unit Actions"
+        title = self.lang.get("unit_action.title", "Unit Actions")
         title_surface = self.title_font.render(title, True, self.text_color)
         title_rect = title_surface.get_rect(centerx=self.menu_rect.centerx, y=self.menu_rect.y + 10)
         screen.blit(title_surface, title_rect)

@@ -107,10 +107,11 @@ class Menu:
         self.option_bg_selected_color = theme.OPTION_BG_SELECTED
         self.option_bg_disabled_color = theme.OPTION_BG_DISABLED
 
-        # Fonts (titles use the pixel-styled display font)
-        self.title_font = get_display_font(theme.FONT_SIZE_TITLE)
-        self.option_font = get_font(theme.FONT_SIZE_OPTION)
-        self.indicator_font = get_font(theme.FONT_SIZE_INDICATOR)
+        # Fonts (titles use the pixel-styled display font). Rebuilt when the
+        # active language changes — CJK needs different faces than Latin, and
+        # menus that outlive a language switch must not keep stale Fonts.
+        self._fonts_language: str | None = None
+        self.refresh_fonts()
 
         # Mouse tracking
         self.hover_index = -1
@@ -122,10 +123,6 @@ class Menu:
         # the upper bound.
         self.scroll_offset = 0
         self.max_visible_options = theme.MAX_VISIBLE_OPTIONS
-        # Guarantee rows never overlap even if the option font is taller
-        # than the theme's nominal spacing allows for.
-        row_height = self.option_font.get_height()
-        self.option_spacing = max(theme.MENU_OPTION_SPACING, row_height + 2 * theme.OPTION_PADDING_Y + 4)
 
         # Memoized uniform option width, invalidated when the labels change.
         self._width_cache: tuple[tuple[str, ...], int] | None = None
@@ -136,6 +133,34 @@ class Menu:
         # One-line control hint drawn at the bottom of the screen. Set to
         # None in a subclass to suppress it.
         self.footer_hint: str | None = self.lang.get("common.menu_hint", "Arrows: Move   Enter: Select   Esc: Back")
+
+    def refresh_fonts(self) -> None:
+        """Reload title/option fonts for the current language.
+
+        Call after a language switch (or rely on ``_ensure_fonts_for_language``
+        which runs before every draw). Also recomputes ``option_spacing`` so
+        CJK faces with different metrics do not overlap rows.
+        """
+        self.title_font = get_display_font(theme.FONT_SIZE_TITLE)
+        self.option_font = get_font(theme.FONT_SIZE_OPTION)
+        self.indicator_font = get_font(theme.FONT_SIZE_INDICATOR)
+        row_height = self.option_font.get_height()
+        self.option_spacing = max(theme.MENU_OPTION_SPACING, row_height + 2 * theme.OPTION_PADDING_Y + 4)
+        self._width_cache = None
+        try:
+            self._fonts_language = get_language().get_current_language()
+        except Exception:  # pylint: disable=broad-except
+            self._fonts_language = None
+
+    def _ensure_fonts_for_language(self) -> None:
+        """If the active language changed since fonts were loaded, reload them."""
+        try:
+            current = get_language().get_current_language()
+        except Exception:  # pylint: disable=broad-except
+            return
+        if current != self._fonts_language:
+            self.lang = get_language()
+            self.refresh_fonts()
 
     def add_option(self, text: str, callback: Callable[[], Any], enabled: bool = True) -> None:
         """Add a menu option.
@@ -396,6 +421,7 @@ class Menu:
 
     def _populate_option_rects(self) -> None:
         """Populate option_rects for click detection without drawing to screen."""
+        self._ensure_fonts_for_language()
         self.option_rects = [bg_rect for _, _, bg_rect in self._layout_visible_options()]
 
     def _draw_content(self) -> None:
@@ -405,6 +431,7 @@ class Menu:
         credits info) and call super()._draw_content() for the base rendering.
         The draw() method calls this then flips the display once.
         """
+        self._ensure_fonts_for_language()
         self.screen.fill(self.bg_color)
 
         screen_width = self.screen.get_width()

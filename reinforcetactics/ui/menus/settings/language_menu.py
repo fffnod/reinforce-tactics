@@ -39,6 +39,9 @@ class LanguageMenu(Menu):
         reset_language(lang_code)
         self.lang = get_language()  # Refresh our reference
 
+        # Latin-bundled fonts cannot draw CJK; reload faces after the switch.
+        self.refresh_fonts()
+
         # Clear existing options
         self.clear_options()
 

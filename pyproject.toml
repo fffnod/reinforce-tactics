@@ -108,6 +108,9 @@ warn_unused_configs = true
 disallow_untyped_defs = false
 check_untyped_defs = false
 ignore_missing_imports = true
+# PyYAML is installed without types-PyYAML in many local/dev envs; treat that
+# the same as a missing import rather than failing the whole tree.
+disable_error_code = ["import-untyped"]
 
 # Gradually enable stricter checking per-module as types are improved
 # Reduced from 25 files → 9 files (67 remaining errors).

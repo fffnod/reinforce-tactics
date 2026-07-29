@@ -7,6 +7,19 @@ import pygame
 from reinforcetactics.constants import TILE_SIZE, UNIT_DATA
 from reinforcetactics.ui import theme, widgets
 from reinforcetactics.utils.fonts import get_display_font, get_font
+from reinforcetactics.utils.language import get_language
+
+# Map unit type codes to language keys (fall back to UNIT_DATA English name).
+_UNIT_NAME_KEYS = {
+    "W": "warrior",
+    "M": "mage",
+    "C": "cleric",
+    "A": "archer",
+    "K": "knight",
+    "R": "rogue",
+    "S": "sorcerer",
+    "B": "barbarian",
+}
 
 
 class UnitPurchaseMenu:
@@ -25,6 +38,7 @@ class UnitPurchaseMenu:
         self.game_state = game_state
         self.building_pos = building_pos
         self.running = True
+        self.lang = get_language()
 
         # Colors (from shared theme)
         self.bg_color = theme.PANEL_BG
@@ -210,7 +224,7 @@ class UnitPurchaseMenu:
         pygame.draw.rect(screen, self.border_color, self.menu_rect, width=2, border_radius=10)
 
         # Draw title
-        title = "Purchase Unit"
+        title = self.lang.get("unit_purchase.title", "Purchase Unit")
         title_surface = self.title_font.render(title, True, self.text_color)
         title_rect = title_surface.get_rect(centerx=self.menu_rect.centerx, y=self.menu_rect.y + 10)
         screen.blit(title_surface, title_rect)
@@ -226,10 +240,13 @@ class UnitPurchaseMenu:
         spacing = 35
         current_player = self.game_state.current_player
         player_gold = self.game_state.player_gold[current_player]
+        cost_suffix = self.lang.get("unit_purchase.cost_suffix", "g")
 
         for i, unit_type in enumerate(self.unit_types):
             unit_data = UNIT_DATA[unit_type]
-            unit_name = unit_data["name"]
+            name_key = _UNIT_NAME_KEYS.get(unit_type, "")
+            default_name = str(unit_data["name"])
+            unit_name = self.lang.get(name_key, default_name) if name_key else default_name
             unit_cost = unit_data["cost"]
 
             # Check if player can afford
@@ -238,7 +255,7 @@ class UnitPurchaseMenu:
             button_rect = pygame.Rect(self.menu_rect.x + 15, start_y + i * spacing, 190, 28)
             button = widgets.Button(
                 button_rect,
-                f"{unit_name} - {unit_cost}g",
+                f"{unit_name} - {unit_cost}{cost_suffix}",
                 self.option_font,
                 style=widgets.MENU_OPTION_SMALL,
                 enabled=can_afford,

@@ -4,6 +4,7 @@ import pygame
 
 from reinforcetactics.ui import widgets
 from reinforcetactics.ui.widgets.dialog import Dialog
+from reinforcetactics.utils.language import get_language
 
 
 class ConfirmationDialog(Dialog):
@@ -22,6 +23,11 @@ class ConfirmationDialog(Dialog):
             confirm_text: Text for confirm button
             cancel_text: Text for cancel button
         """
+        lang = get_language()
+        if confirm_text == "Confirm":
+            confirm_text = lang.get("common.confirm", "Confirm")
+        if cancel_text == "Cancel":
+            cancel_text = lang.get("common.cancel", "Cancel")
         super().__init__(
             screen,
             title,
@@ -30,7 +36,7 @@ class ConfirmationDialog(Dialog):
                 (cancel_text, False, widgets.CANCEL),
                 (confirm_text, True, widgets.CONFIRM),
             ],
-            hint="Press Y to confirm, N or ESC to cancel",
+            hint=lang.get("dialog.confirm_hint", "Press Y to confirm, N or ESC to cancel"),
             keymap={pygame.K_RETURN: True, pygame.K_y: True, pygame.K_n: False},
             cancel_value=False,
             quit_value=False,

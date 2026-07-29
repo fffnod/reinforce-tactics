@@ -923,9 +923,21 @@ class Renderer:
             if self._get_visibility_state(unit.x, unit.y, fow_player) != VISIBLE:
                 return
 
-        # Get unit data
+        # Get unit data (localized name when available)
         unit_data = UNIT_DATA.get(unit.type, {})
-        unit_name = unit_data.get("name", unit.type)
+        _unit_lang_keys = {
+            "W": "warrior",
+            "M": "mage",
+            "C": "cleric",
+            "A": "archer",
+            "K": "knight",
+            "R": "rogue",
+            "S": "sorcerer",
+            "B": "barbarian",
+        }
+        lang = get_language()
+        name_key = _unit_lang_keys.get(unit.type, "")
+        unit_name = lang.get(name_key, unit_data.get("name", unit.type)) if name_key else unit_data.get("name", unit.type)
 
         # Build tooltip lines
         # Handle attack display - can be int or dict (for ranged units like Mage/Sorcerer)
@@ -936,20 +948,20 @@ class Renderer:
             attack_str = str(attack_data)
 
         lines = [
-            f"{unit_name} (P{unit.player})",
-            f"HP: {unit.health}/{unit.max_health}",
-            f"ATK: {attack_str}  DEF: {unit.defence}",
-            f"MOV: {unit.movement_range}",
+            lang.get("tooltip.player_unit", "{name} (P{player})").format(name=unit_name, player=unit.player),
+            lang.get("tooltip.hp", "HP: {current}/{max}").format(current=unit.health, max=unit.max_health),
+            lang.get("tooltip.atk_def", "ATK: {atk}  DEF: {defence}").format(atk=attack_str, defence=unit.defence),
+            lang.get("tooltip.mov", "MOV: {mov}").format(mov=unit.movement_range),
         ]
 
         # Add status indicators
         status_parts = []
         if unit.can_move:
-            status_parts.append("Can Move")
+            status_parts.append(lang.get("tooltip.can_move", "Can Move"))
         if unit.can_attack:
-            status_parts.append("Can Act")
+            status_parts.append(lang.get("tooltip.can_act", "Can Act"))
         if unit.is_paralyzed():
-            status_parts.append(f"Paralyzed ({unit.paralyzed_turns})")
+            status_parts.append(lang.get("tooltip.paralyzed", "Paralyzed ({turns})").format(turns=unit.paralyzed_turns))
 
         if status_parts:
             lines.append(" | ".join(status_parts))

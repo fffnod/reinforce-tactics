@@ -439,28 +439,35 @@ class PlayerConfigMenu:
                 # the Browse button next to it.
                 diff_x = type_rect.right + BUTTON_GAP
                 bot_type = config.get("bot_type") or "SimpleBot"
-                # Get display text for bot type
+                # Get display text for bot type (localized)
                 bot_display_names = {
-                    "SimpleBot": "Simple Bot",
-                    "MediumBot": "Medium Bot",
-                    "AdvancedBot": "Advanced Bot",
-                    "OpenAIBot": "OpenAI (GPT)",
-                    "ClaudeBot": "Claude",
-                    "GeminiBot": "Gemini",
-                    "ModelBot": "Custom Model",
+                    "SimpleBot": self.lang.get("player_config.bot_simple", "Simple Bot"),
+                    "MediumBot": self.lang.get("player_config.bot_medium", "Medium Bot"),
+                    "AdvancedBot": self.lang.get("player_config.bot_advanced", "Advanced Bot"),
+                    "OpenAIBot": self.lang.get("player_config.bot_openai", "OpenAI (GPT)"),
+                    "ClaudeBot": self.lang.get("player_config.bot_claude", "Claude"),
+                    "GeminiBot": self.lang.get("player_config.bot_gemini", "Gemini"),
+                    "ModelBot": self.lang.get("player_config.bot_model", "Custom Model"),
                 }
                 diff_text = bot_display_names.get(bot_type, bot_type)
 
                 # Add indicator if bot is unavailable (no API key)
                 if bot_type in self.available_llm_bots and not self.available_llm_bots[bot_type]:
-                    diff_text += " (No API Key)"
+                    diff_text += " " + self.lang.get("player_config.no_api_key", "(No API Key)")
 
                 diff_rect = self._draw_button(diff_x, y_pos, diff_text, "difficulty_select", i, disabled=False)
 
                 # If ModelBot is selected, show browse button and model status
                 if bot_type == "ModelBot":
                     browse_x = diff_rect.right + BUTTON_GAP
-                    browse_rect = self._draw_button(browse_x, y_pos, "Browse...", "browse_model", i, disabled=False)
+                    browse_rect = self._draw_button(
+                        browse_x,
+                        y_pos,
+                        self.lang.get("player_config.browse", "Browse..."),
+                        "browse_model",
+                        i,
+                        disabled=False,
+                    )
 
                     # Show model status below
                     model_path = config.get("model_path")
