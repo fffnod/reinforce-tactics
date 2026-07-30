@@ -18,9 +18,10 @@
 
 | 入口 | 概述 |
 |------|------|
+| **[`learning-guide-v2/README.md`](learning-guide-v2/README.md)** | **第二版正式教材（推荐）**：00–27 章 + 5 个附录；自包含数学、项目源码、算法专章、CPU 实操、历史因果案例、HTML 与 PDF |
 | **[`learning-guide/README.md`](learning-guide/README.md)** | 策略类强化学习学习指南：00–17 章 + 术语表；主线为「玩游戏 → 短训 PPO → 评估 → 锦标赛/Bot」 |
 
-Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）见同目录 `14-`…`17-` 与 `glossary.md`。算法速查仍用 `algorithms/`；源码深潜用 `source-analysis/`。
+第二版不依赖旧指南、`algorithms/`、`source-analysis/` 或 `docs/` 补齐正文概念；上述资料仍作为维护与速查知识库保留。旧版文件和入口不变。
 
 ---
 
@@ -28,7 +29,7 @@ Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）�
 
 | 分类 | 子目录 / 前缀 | 用途 |
 |------|----------------|------|
-| **学习指南** | `learning-guide/` | 零基础 RL 长教程（章节体，Part A–D） |
+| **学习指南** | `learning-guide-v2/`（推荐）、`learning-guide/`（旧版保留） | 零基础 RL 正式教材与旧版教程 |
 | **使用类** | `usage/` | 安装、启动、GUI 操作、训练命令、部署迁移等「怎么用」 |
 | **问题排查类** | `troubleshooting/` | 故障现象、根因、修复步骤、验证方法 |
 | **源代码分析类** | `source-analysis/` | 模块结构、关键调用链、设计取舍 |
@@ -42,6 +43,9 @@ Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）�
 
 | 文件 | 概述 | 状态 |
 |------|------|------|
+| [`learning-guide-v2/README.md`](learning-guide-v2/README.md) | 第二版 28 章正式教材、五篇路线、附录与连续阅读版本 | 已写（推荐） |
+| [`learning-guide-v2/export/Reinforce-Tactics-RL-Learning-Guide.html`](learning-guide-v2/export/Reinforce-Tactics-RL-Learning-Guide.html) | 第二版连续阅读 HTML | 构建产物 |
+| [`../output/pdf/Reinforce-Tactics-RL-Learning-Guide-v2.pdf`](../output/pdf/Reinforce-Tactics-RL-Learning-Guide-v2.pdf) | 第二版正式 PDF | 构建产物 |
 | [`learning-guide/README.md`](learning-guide/README.md) | 指南总目录、阅读路径、与 algorithms/docs 的关系 | 已写 |
 | [`learning-guide/00-how-to-use-this-guide.md`](learning-guide/00-how-to-use-this-guide.md) | 仓库地图、conda/extras、路径与截图约定 | 已写（Part A） |
 | [`learning-guide/01-why-rl-and-this-game.md`](learning-guide/01-why-rl-and-this-game.md) | 监督 vs RL、项目五支柱 | 已写（Part A） |
@@ -134,7 +138,7 @@ Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）�
 4. 中文 UI / 字体：[`usage/chinese-i18n-coverage.md`](usage/chinese-i18n-coverage.md)、[`troubleshooting/chinese-font-display.md`](troubleshooting/chinese-font-display.md)。
 5. **熟悉架构 / 读代码**：从 [`source-analysis/overview.md`](source-analysis/overview.md) 进入。
 6. **学 RL 概念（速查）**：从 [`algorithms/overview.md`](algorithms/overview.md) 进入。
-7. **学 RL 全教程（章节体）**：从 [`learning-guide/README.md`](learning-guide/README.md) 进入。
+7. **学 RL 全教程（正式教材）**：从 [`learning-guide-v2/README.md`](learning-guide-v2/README.md) 进入；旧版入口继续保留。
 
 ---
 
@@ -143,7 +147,7 @@ Part D 终章（规则 Bot、LLM Bot、工具链、综合课题、术语表）�
 | 目标 | 顺序 |
 |------|------|
 | 建立项目整体概念 | [`source-analysis/overview.md`](source-analysis/overview.md) → core → app 或 bots → rl-gym-env |
-| **从零学本项目 RL（完整教程）** | [`learning-guide/README.md`](learning-guide/README.md)（00→17） |
+| **从零学本项目 RL（完整教程）** | [`learning-guide-v2/README.md`](learning-guide-v2/README.md)（00→27 + 附录） |
 | 从零学本项目 RL（速查卡） | [`algorithms/overview.md`](algorithms/overview.md) → mdp → ppo → masking → reward → curriculum |
 | 进阶训练器 | feudal / alphazero 算法文 + [`source-analysis/rl-advanced-trainers.md`](source-analysis/rl-advanced-trainers.md) |
 | 评测梯子 | [`algorithms/evaluation-and-elo.md`](algorithms/evaluation-and-elo.md) + [`source-analysis/tournament-system.md`](source-analysis/tournament-system.md) |

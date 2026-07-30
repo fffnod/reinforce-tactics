@@ -1,0 +1,44 @@
+algorithm: feudal
+total_timesteps: 64
+seed: 0
+
+env:
+  map_file: maps/1v1/starter.csv
+  opponent: random
+  max_steps: 32
+  max_turns: 12
+  n_envs: 1
+  action_space_type: multi_discrete
+
+ppo:
+  learning_rate: 3.0e-4
+  n_steps: 32
+  batch_size: 16
+  n_epochs: 1
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  device: cpu
+  lr_schedule: constant
+
+feudal:
+  manager_horizon: 4
+  worker_reward_alpha: 0.5
+  manager_lr_scale: 1.0
+  worker_lr_scale: 1.0
+  autoregressive_worker: false
+  reward_scale: 0.001
+
+eval:
+  eval_freq: 1000
+  n_eval_episodes: 1
+  checkpoint_freq: 1000
+
+logging:
+  log_dir: tmp/learning-guide-v2/feudal
+  tensorboard: false
+  wandb: false
+

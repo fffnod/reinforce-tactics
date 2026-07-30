@@ -1,0 +1,43 @@
+algorithm: self_play
+total_timesteps: 64
+seed: 0
+
+env:
+  max_steps: 32
+  n_envs: 2
+  use_subprocess: false
+
+ppo:
+  learning_rate: 3.0e-4
+  n_steps: 32
+  batch_size: 16
+  n_epochs: 1
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  use_action_masking: true
+  device: cpu
+
+self_play:
+  swap_players: true
+  opponent_update_freq: 32
+  use_opponent_pool: true
+  pool_size: 2
+  pool_strategy: uniform
+  add_to_pool_freq: 32
+  min_win_rate_for_pool: 0.0
+  mixed_training: true
+  bot_ratio: 0.5
+
+eval:
+  eval_freq: 64
+  n_eval_episodes: 1
+  checkpoint_freq: 64
+
+logging:
+  log_dir: tmp/learning-guide-v2/self-play
+  tensorboard: false
+  wandb: false

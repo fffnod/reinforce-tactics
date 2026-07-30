@@ -1,0 +1,74 @@
+{
+  "environment": {
+    "python": "3.12.13",
+    "gymnasium": "1.3.0",
+    "stable_baselines3": "2.9.0",
+    "sb3_contrib": "2.9.0",
+    "torch": "2.13.0+cpu",
+    "device": "cpu"
+  },
+  "action_space_compatibility": {
+    "multi_discrete": {
+      "space": "MultiDiscrete([10  8  6  6  6  6])",
+      "PPO": "construct_ok",
+      "A2C": "construct_ok",
+      "DQN": "AssertionError: The algorithm only supports (<class 'gymnasium.spaces.discrete.Discrete'>,) as action spaces but MultiDiscrete([10  8  6  6  6  6]) was provided",
+      "MaskablePPO": "construct_ok"
+    },
+    "flat_discrete": {
+      "space": "Discrete(512)",
+      "PPO": "construct_ok",
+      "A2C": "construct_ok",
+      "DQN": "construct_ok",
+      "MaskablePPO": "construct_ok"
+    }
+  },
+  "mask_probe": {
+    "per_dimension_true_counts": [
+      2,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "mask_cross_product": 96,
+    "domain_legal_actions": 7,
+    "overapproximation_ratio": 13.714285714285714
+  },
+  "maskable_ppo_probe": {
+    "timesteps": 64,
+    "predicted_action": 5,
+    "step_reward": 0.7969999999999999,
+    "terminated": false,
+    "truncated": false,
+    "end_reason": null
+  },
+  "self_play_probe": {
+    "pool_size_after_overflow": 2,
+    "selection_weights": [
+      0.3333333333333333,
+      0.6666666666666666
+    ],
+    "observation_keys": [
+      "grid",
+      "units",
+      "global_features"
+    ],
+    "mask_dimensions": 6,
+    "step_tuple_length": 5,
+    "reset_info_type": "dict"
+  },
+  "mcts_probe": {
+    "simulations": 2,
+    "policy_entries": 360,
+    "probability_sum": 1.0,
+    "nonzero_actions": 2,
+    "root_value": 0.04520423710346222,
+    "observation_keys": [
+      "grid",
+      "units",
+      "global_features"
+    ]
+  }
+}
