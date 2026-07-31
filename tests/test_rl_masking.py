@@ -3,6 +3,7 @@
 import numpy as np
 import pytest
 
+from reinforcetactics.core.unit import Unit
 from reinforcetactics.rl.gym_env import StrategyGameEnv
 from reinforcetactics.rl.masking import (
     ActionMaskedEnv,
@@ -141,3 +142,79 @@ class TestValidateActionMask:
         result = validate_action_mask(env)
         assert result["mask_summary"]["end_turn"]["has_legal_actions"] is True
         env.close()
+
+
+class TestMaskCacheAndCure:
+    """Mask correctness against direct game-state mutation.
+
+    Ported from tests/verify_mask.py, which pytest never collected because
+    the filename did not match the ``test_*.py`` pattern.
+    """
+
+    @pytest.fixture
+    def env(self):
+        env = StrategyGameEnv(map_file=None, opponent="bot", render_mode=None)
+        yield env
+        env.close()
+
+    def test_cache_invalidation(self, env):
+        """Executing an action invalidates the cached action mask."""
+        env.reset()
+        env.game_state.units = []
+        env.game_state._invalidate_cache()
+
+        # Unit at 0,0
+        unit = Unit("W", 0, 0, player=1)
+        unit.can_move = True
+        env.game_state.units.append(unit)
+        env.game_state.grid.get_tile(0, 0).type = "p"
+        env.game_state.grid.get_tile(1, 0).type = "p"
+        env.game_state.current_player = 1
+
+        # 1. Check initial mask (Move to 1,0 is valid)
+        mask1 = env._get_action_mask()
+        area = env.grid_width * env.grid_height
+        idx_move_1_0 = (1 * area) + (0 * env.grid_width + 1)
+        assert mask1[idx_move_1_0] == 1.0
+
+        # 2. Execute move to 1,0 (directly via game state to simulate action)
+        env.game_state.move_unit(unit, 1, 0)
+
+        # 3. The mask must change: the unit exhausted its movement, and it is
+        # the only unit, so the entire move layer should now be invalid.
+        mask2 = env._get_action_mask()
+        assert not np.array_equal(mask1, mask2), "Mask should change after action"
+
+        move_layer_start = 1 * area
+        move_layer_end = 2 * area
+        assert np.all(mask2[move_layer_start:move_layer_end] == 0.0), "No moves should be valid after unit moves"
+
+    def test_cure_masking_and_execution(self, env):
+        """Cure action is correctly masked and executed."""
+        env.reset()
+        env.game_state.units = []
+        env.game_state._invalidate_cache()
+
+        # Setup: Cleric (Player 1) and Paralyzed Ally (Player 1)
+        cleric = Unit("C", 5, 5, player=1)
+        cleric.can_attack = True  # Enable unit to act
+        ally = Unit("W", 5, 6, player=1)
+        ally.paralyzed_turns = 2  # Paralyzed
+
+        env.game_state.units.append(cleric)
+        env.game_state.units.append(ally)
+        env.game_state._invalidate_cache()
+
+        # 1. Check mask: index for Heal/Cure action (type 4) at ally position (5,6)
+        mask = env._get_action_mask()
+        area = env.grid_width * env.grid_height
+        heal_idx = (4 * area) + (6 * env.grid_width + 5)
+        assert mask[heal_idx] == 1.0, "Cure action should be masked as valid"
+
+        # 2. Execute Cure: Type 4 (Heal/Cure), Cleric, From(5,5), To(5,6)
+        action_dict = {"action_type": 4, "unit_type": "C", "from_pos": (5, 5), "to_pos": (5, 6)}
+        reward, is_valid = env._execute_action(action_dict)
+
+        assert is_valid, "Cure action should be valid"
+        assert not ally.is_paralyzed(), "Ally should be cured (paralyzed_turns=0)"
+        assert reward > 0, "Should receive reward for curing"
