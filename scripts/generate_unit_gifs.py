@@ -18,6 +18,7 @@ Sprite sheet format (6 columns x 5 rows of 64x64 frames, centre-cropped to 32x32
 import argparse
 import os
 import sys
+from pathlib import Path
 
 try:
     from PIL import Image
@@ -150,8 +151,10 @@ def main():
     parser.add_argument(
         "--output",
         "-o",
-        default="docs-site/static/img/units",
-        help="Output directory for generated GIFs (default: docs-site/static/img/units)",
+        # Anchored to the repo root so running the script from another
+        # directory (e.g. scripts/) can't create a stray docs-site/ tree.
+        default=str(Path(__file__).resolve().parent.parent / "docs-site" / "static" / "img" / "units"),
+        help="Output directory for generated GIFs (default: <repo>/docs-site/static/img/units)",
     )
     parser.add_argument(
         "--scale",

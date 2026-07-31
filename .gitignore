@@ -19,7 +19,9 @@
 /test_map_editor_save.py
 /map_editor_demo.py
 /replays
-/saves
+# Local saves are ignored, but the bundled demo scenarios stay tracked.
+/saves/*
+!/saves/*_scenario.json
 settings.json
 
 # Test/coverage artifacts
@@ -32,8 +34,12 @@ htmlcov/
 dist/
 build/
 
-# RL training and evaluation artifacts
-/tournament_results
+# RL training and evaluation artifacts.
+# Loose tournament outputs are ignored, but versioned archive directories
+# (e.g. tournament_results/0.1.1/) are deliberate per-release records and
+# stay tracked.
+/tournament_results/*
+!/tournament_results/[0-9]*.[0-9]*.[0-9]*/
 /checkpoints
 /models
 /tensorboard
