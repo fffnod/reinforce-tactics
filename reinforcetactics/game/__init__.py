@@ -2,6 +2,10 @@
 Game mechanics module.
 """
 
+# GameMechanics moved to reinforcetactics.core.mechanics (the engine layer);
+# re-exported here so existing `from reinforcetactics.game import GameMechanics`
+# imports keep working.
+from reinforcetactics.core.mechanics import GameMechanics
 from reinforcetactics.game.bot import NoopBot, RandomBot, SimpleBot
 from reinforcetactics.game.bot_base import ABILITY_PROVIDERS, BaseBot, BotUnitMixin
 from reinforcetactics.game.llm_bot import ClaudeBot, GeminiBot, LLMBot, OpenAIBot
@@ -14,7 +18,6 @@ from reinforcetactics.game.llm_prompts import (
     list_prompts,
     register_prompt,
 )
-from reinforcetactics.game.mechanics import GameMechanics
 from reinforcetactics.game.model_bot import ModelBot
 
 __all__ = [

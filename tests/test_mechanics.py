@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 
 from reinforcetactics.core.grid import TileGrid
+from reinforcetactics.core.mechanics import GameMechanics
 from reinforcetactics.core.unit import Unit
-from reinforcetactics.game.mechanics import GameMechanics
 
 
 @pytest.fixture
@@ -826,7 +826,7 @@ class TestRogueEvadeAbility:
     def test_rogue_evade_triggers_when_random_below_threshold(self, simple_grid, monkeypatch):
         """Test Rogue evades counter-attack when random roll is below 0.25."""
         # Mock random.random to return a value below 0.25
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.1)
 
@@ -842,7 +842,7 @@ class TestRogueEvadeAbility:
     def test_rogue_no_evade_when_random_above_threshold(self, simple_grid, monkeypatch):
         """Test Rogue doesn't evade when random roll is above 0.25."""
         # Mock random.random to return a value above 0.25
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.5)
 
@@ -858,7 +858,7 @@ class TestRogueEvadeAbility:
     def test_non_rogue_cannot_evade(self, simple_grid, monkeypatch):
         """Test non-Rogue units cannot evade counter-attacks."""
         # Even with favorable random roll, non-Rogues shouldn't evade
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.1)
 
@@ -1025,7 +1025,7 @@ class TestRogueForestEvadeBonus:
 
     def test_rogue_evade_in_forest_triggers_at_higher_threshold(self, forest_grid, monkeypatch):
         """Test Rogue in forest evades at 0.25 (above 0.15 but below 0.30)."""
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.25)
 
@@ -1042,7 +1042,7 @@ class TestRogueForestEvadeBonus:
 
     def test_rogue_evade_in_forest_no_evade_above_threshold(self, forest_grid, monkeypatch):
         """Test Rogue in forest doesn't evade when random is above 0.30."""
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.35)
 
@@ -1059,7 +1059,7 @@ class TestRogueForestEvadeBonus:
 
     def test_rogue_evade_on_grass_uses_base_chance(self, simple_grid, monkeypatch):
         """Test Rogue on grass uses base 15% evade chance, not forest bonus."""
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.20)
 
@@ -1123,7 +1123,7 @@ class TestRogueEvadeRngInjection:
         # Global random says "evade", the injected rng says "no evade": the
         # injected source must win, otherwise seeded games silently depend
         # on unseeded module state.
-        import reinforcetactics.game.mechanics as mechanics_module
+        import reinforcetactics.core.mechanics as mechanics_module
 
         monkeypatch.setattr(mechanics_module.random, "random", lambda: 0.0)
 

@@ -24,9 +24,9 @@ from reinforcetactics.constants import (
     TileType,
 )
 from reinforcetactics.core.grid import TileGrid
+from reinforcetactics.core.mechanics import GameMechanics
 from reinforcetactics.core.unit import Unit
 from reinforcetactics.core.visibility import VISIBLE, VisibilityMap, get_visible_units
-from reinforcetactics.game.mechanics import GameMechanics
 
 # Configure logging
 logger = logging.getLogger(__name__)
