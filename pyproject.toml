@@ -76,7 +76,7 @@ Repository = "https://github.com/kuds/reinforce-tactics"
 Issues = "https://github.com/kuds/reinforce-tactics/issues"
 
 [project.scripts]
-reinforce-tactics = "main:main"
+reinforce-tactics = "reinforcetactics.cli.main:main"
 
 [tool.setuptools.packages.find]
 include = ["reinforcetactics*"]
