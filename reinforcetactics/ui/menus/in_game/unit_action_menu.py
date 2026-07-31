@@ -5,7 +5,7 @@ from typing import Any
 import pygame
 
 from reinforcetactics.constants import TILE_SIZE
-from reinforcetactics.game.mechanics import GameMechanics
+from reinforcetactics.core.mechanics import GameMechanics
 from reinforcetactics.ui import theme, widgets
 from reinforcetactics.utils.fonts import get_display_font, get_font
 
