@@ -604,7 +604,12 @@ class AlphaZeroTrainer:
         Returns:
             AlphaZeroTrainer instance with loaded weights.
         """
-        checkpoint = torch.load(path, map_location=device, weights_only=False)
+        # weights_only=True: never unpickle arbitrary objects from a shared
+        # checkpoint file. The checkpoint holds only tensors and primitives —
+        # history is json.dump-ed elsewhere, and the ReduceLROnPlateau /
+        # optimizer state dicts are plain containers — so the safe loader
+        # handles all of it.
+        checkpoint = torch.load(path, map_location=device, weights_only=True)
         config = checkpoint.get("config", {})
         config.update(kwargs)
         config["device"] = device

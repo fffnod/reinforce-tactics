@@ -237,7 +237,7 @@ class InputHandler:
             self.preview_unit = clicked_unit
 
             # Get all attackable positions (enemy unit positions)
-            from reinforcetactics.game.mechanics import GameMechanics
+            from reinforcetactics.core.mechanics import GameMechanics
 
             attackable_enemies = GameMechanics.get_attackable_enemies(clicked_unit, self.game.units, self.game.grid)
 

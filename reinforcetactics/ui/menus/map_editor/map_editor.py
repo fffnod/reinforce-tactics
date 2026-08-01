@@ -98,6 +98,12 @@ class MapEditor:
                     if self.modified:
                         # TODO: Add save confirmation dialog
                         pass
+                    # Re-post QUIT for the parent menu if we don't own the
+                    # screen (mirrors Menu._on_quit_event), so the close
+                    # request propagates out instead of only dismissing
+                    # this screen.
+                    if not self.owns_screen:
+                        pygame.event.post(pygame.event.Event(pygame.QUIT))
                     return {"type": "exit"}
 
                 self._handle_event(event)

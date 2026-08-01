@@ -10,8 +10,8 @@ import pytest
 
 from reinforcetactics import constants as C
 from reinforcetactics.core.game_state import GameState
+from reinforcetactics.core.mechanics import GameMechanics
 from reinforcetactics.core.unit import Unit
-from reinforcetactics.game.mechanics import GameMechanics
 
 
 def _map():

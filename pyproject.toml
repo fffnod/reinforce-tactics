@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools>=64"]
+# >=77: first setuptools release that accepts the PEP 639 SPDX license
+# string used below; older versions satisfying a lower floor fail the build.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -76,7 +78,7 @@ Repository = "https://github.com/kuds/reinforce-tactics"
 Issues = "https://github.com/kuds/reinforce-tactics/issues"
 
 [project.scripts]
-reinforce-tactics = "main:main"
+reinforce-tactics = "reinforcetactics.cli.main:main"
 
 [tool.setuptools.packages.find]
 include = ["reinforcetactics*"]

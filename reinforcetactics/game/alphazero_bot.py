@@ -86,7 +86,10 @@ class AlphaZeroBot(BaseBot):
         if not path.exists():
             raise FileNotFoundError(f"Model file not found: {path}")
 
-        checkpoint = torch.load(str(path), map_location=device, weights_only=False)
+        # weights_only=True: never unpickle arbitrary objects from a shared
+        # checkpoint file. Everything read below (config dict, state_dict,
+        # iteration) is tensors/primitives, which the safe loader allows.
+        checkpoint = torch.load(str(path), map_location=device, weights_only=True)
 
         # Get config from checkpoint or use defaults
         config = checkpoint.get("config", {})

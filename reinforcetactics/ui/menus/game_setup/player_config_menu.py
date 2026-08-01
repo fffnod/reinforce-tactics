@@ -664,6 +664,12 @@ class PlayerConfigMenu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    # Re-post QUIT for the parent menu if we don't own the
+                    # screen (mirrors Menu._on_quit_event), so the close
+                    # request propagates out instead of only dismissing
+                    # this screen.
+                    if not self.owns_screen:
+                        pygame.event.post(pygame.event.Event(pygame.QUIT))
                     return None
 
                 result = self.handle_input(event)
