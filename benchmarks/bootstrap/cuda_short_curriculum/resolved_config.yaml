@@ -1,0 +1,154 @@
+algorithm: maskable_ppo
+total_timesteps: 3000000
+seed: 42
+warm_start_path: null
+env:
+  map_file: null
+  opponent: bot
+  max_steps: 1500
+  max_turns: 40
+  fog_of_war: false
+  enabled_units: null
+  action_space_type: flat_discrete
+  max_flat_actions: 512
+  max_actions_per_turn: 40
+  reward_config:
+    win_by_hq_capture: 50.0
+    win_by_elimination: 50.0
+    win: 50.0
+    loss: -50.0
+    draw: -50.0
+    income_diff: 0.05
+    unit_diff: 0.3
+    structure_control: 1.0
+    create_unit: 0.0
+    move: 0.0
+    damage_scale: 0.0
+    kill: 0.0
+    seize_progress: 3.0
+    capture: 10.0
+    tower_capture: 15.0
+    building_capture: 40.0
+    hq_capture: 25.0
+    cure: 0.0
+    heal_scale: 0.0
+    paralyze: 0.0
+    haste: 0.0
+    defence_buff: 0.0
+    attack_buff: 0.0
+    invalid_action: -0.1
+    turn_penalty: 0.0
+    win_speed_bonus: 50.0
+    enemy_neutral_capture: -8.0
+    enemy_owned_capture: -15.0
+  engine_overrides: null
+  n_envs: 8
+  use_subprocess: true
+  pad_to_size: null
+  gold_scale: 1000.0
+  turn_scale: 60.0
+  unit_count_scale: 20.0
+  opponent_kwargs: null
+ppo:
+  learning_rate: 0.0003
+  n_steps: 2048
+  batch_size: 256
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.05
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  use_action_masking: true
+  device: cuda
+  lr_schedule: constant
+  policy_kwargs:
+    net_arch:
+      pi:
+      - 256
+      - 256
+      vf:
+      - 256
+      - 256
+  purchase_explore_eps: 0.0
+feudal:
+  manager_horizon: 10
+  worker_reward_alpha: 0.5
+  manager_lr_scale: 1.0
+  worker_lr_scale: 1.0
+  autoregressive_worker: false
+  reward_scale: 1.0
+self_play:
+  swap_players: true
+  opponent_update_freq: 10000
+  use_opponent_pool: false
+  pool_size: 10
+  pool_strategy: uniform
+  add_to_pool_freq: 50000
+  min_win_rate_for_pool: 0.55
+  mixed_training: false
+  bot_ratio: 0.3
+  snapshot_freq: 10000
+  eval_opponent: random
+alphazero:
+  res_blocks: 6
+  channels: 128
+  num_simulations: 100
+  c_puct: 1.5
+  dirichlet_alpha: 0.3
+  iterations: 100
+  games_per_iter: 25
+  epochs_per_iter: 10
+  batch_size: 256
+  buffer_size: 100000
+  max_game_steps: 400
+  temperature_threshold: 30
+  eval_games: 20
+  eval_threshold: 0.55
+  lr: 0.001
+  weight_decay: 0.0001
+curriculum:
+  stages:
+  - name: starter_random
+    map_file: maps/1v1/starter.csv
+    opponent: random
+    promotion_win_rate: 0.7
+    patience: 2
+    max_timesteps: 800000
+    min_timesteps_before_promotion: 0
+    n_eval_episodes: 40
+    max_steps: null
+    max_turns: 40
+    ent_coef: 0.1
+    reward_config: null
+    opponent_kwargs: null
+    purchase_explore_eps: null
+  - name: starter_simple
+    map_file: maps/1v1/starter.csv
+    opponent: simple
+    promotion_win_rate: 0.6
+    patience: 3
+    max_timesteps: 1500000
+    min_timesteps_before_promotion: 0
+    n_eval_episodes: 40
+    max_steps: null
+    max_turns: 40
+    ent_coef: 0.05
+    reward_config: null
+    opponent_kwargs: null
+    purchase_explore_eps: null
+  restore_best_checkpoint_between_stages: true
+eval:
+  eval_freq: 50000
+  n_eval_episodes: 30
+  checkpoint_freq: 100000
+  seed_offset: 1000000
+  resample_eval_seeds: false
+  best_eligible_after: null
+logging:
+  log_dir: ./logs
+  wandb: false
+  wandb_project: reinforcetactics
+  wandb_entity: null
+  tensorboard: true

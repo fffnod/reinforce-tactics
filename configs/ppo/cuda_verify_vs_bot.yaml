@@ -1,0 +1,59 @@
+# Short CUDA verification run: MaskablePPO + flat_discrete vs rule bot.
+# Goal: check GPU training works and whether win-rate rises above random.
+#
+# Run:
+#   python scripts/train/train_feudal_rl.py --config configs/ppo/cuda_verify_vs_bot.yaml --use-action-masking --device cuda
+algorithm: maskable_ppo
+total_timesteps: 300000
+seed: 42
+
+env:
+  map_file: maps/1v1/beginner.csv
+  opponent: bot
+  max_steps: 500
+  max_turns: 60
+  n_envs: 8
+  use_subprocess: true
+  action_space_type: flat_discrete
+  max_flat_actions: 512
+  fog_of_war: false
+  max_actions_per_turn: 40
+  reward_config:
+    win: 50.0
+    win_by_hq_capture: 50.0
+    win_by_elimination: 50.0
+    loss: -50.0
+    draw: -25.0
+    income_diff: 0.05
+    unit_diff: 0.3
+    structure_control: 1.0
+    seize_progress: 3.0
+    capture: 10.0
+    invalid_action: -0.1
+
+ppo:
+  learning_rate: 3.0e-4
+  n_steps: 2048
+  batch_size: 256
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.02
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  use_action_masking: true
+  device: cuda
+  policy_kwargs:
+    net_arch:
+      pi: [256, 256]
+      vf: [256, 256]
+
+eval:
+  eval_freq: 20000
+  n_eval_episodes: 20
+  checkpoint_freq: 50000
+
+logging:
+  log_dir: ./logs
+  tensorboard: true

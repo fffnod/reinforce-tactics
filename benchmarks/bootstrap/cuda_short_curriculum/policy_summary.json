@@ -1,0 +1,17 @@
+{
+  "policy_class": "MaskableMultiInputActorCriticPolicy",
+  "extractors": {
+    "global_features": "Flatten",
+    "grid": "Flatten",
+    "units": "Flatten"
+  },
+  "param_counts": {
+    "features_extractor": 0,
+    "mlp_extractor": 632320,
+    "action_net": 131584,
+    "value_net": 257
+  },
+  "total_trainable_params": 764161,
+  "policy_repr": "MaskableMultiInputActorCriticPolicy(\n  (features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (global_features): Flatten(start_dim=1, end_dim=-1)\n      (grid): Flatten(start_dim=1, end_dim=-1)\n      (units): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (pi_features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (global_features): Flatten(start_dim=1, end_dim=-1)\n      (grid): Flatten(start_dim=1, end_dim=-1)\n      (units): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (vf_features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (global_features): Flatten(start_dim=1, end_dim=-1)\n      (grid): Flatten(start_dim=1, end_dim=-1)\n      (units): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (mlp_extractor): MlpExtractor(\n    (policy_net): Sequential(\n      (0): Linear(in_features=977, out_features=256, bias=True)\n      (1): Tanh()\n      (2): Linear(in_features=256, out_features=256, bias=True)\n      (3): Tanh()\n    )\n    (value_net): Sequential(\n      (0): Linear(in_features=977, out_features=256, bias=True)\n      (1): Tanh()\n      (2): Linear(in_features=256, out_features=256, bias=True)\n      (3): Tanh()\n    )\n  )\n  (action_net): Linear(in_features=256, out_features=512, bias=True)\n  (value_net): Linear(in_features=256, out_features=1, bias=True)\n)",
+  "features_extractor_class": "CombinedExtractor"
+}

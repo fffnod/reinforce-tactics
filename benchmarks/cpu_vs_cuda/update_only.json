@@ -1,0 +1,29 @@
+{
+  "update_only": {
+    "cuda": {
+      "device": "cuda",
+      "train_seconds_mean": 2.485301833333627,
+      "train_seconds_all": [
+        2.5418103000001793,
+        2.46520000000055,
+        2.448895200000152
+      ],
+      "rollout_transitions": 16384,
+      "n_epochs": 10,
+      "batch_size": 256
+    },
+    "cpu": {
+      "device": "cpu",
+      "train_seconds_mean": 4.453259433333187,
+      "train_seconds_all": [
+        4.5623757000003025,
+        4.378790799999479,
+        4.4186117999997805
+      ],
+      "rollout_transitions": 16384,
+      "n_epochs": 10,
+      "batch_size": 256
+    },
+    "speedup": 1.792
+  }
+}

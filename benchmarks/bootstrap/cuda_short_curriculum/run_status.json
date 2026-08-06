@@ -1,0 +1,18 @@
+{
+  "status": "curriculum_stalled",
+  "written_at": "2026-08-06T14:46:26.611441+00:00",
+  "stalled_stage": "starter_random",
+  "stages_completed": 1,
+  "achieved_win_rate": 0.725,
+  "threshold": 0.7,
+  "best_model_path": "benchmarks\\bootstrap\\cuda_short_curriculum\\starter_random\\best_model.zip",
+  "best_checkpoint_timestep": 700000,
+  "best_checkpoint_stage_steps": 700000,
+  "curriculum_hash": "1c512b946659",
+  "stage_count": 2,
+  "warm_start": {
+    "used": false,
+    "path": null,
+    "sha256": null
+  }
+}

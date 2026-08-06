@@ -1,0 +1,38 @@
+{
+  "runs": [
+    {
+      "device_arg": "cuda",
+      "param_device": "cuda:0",
+      "timesteps": 65536,
+      "n_envs": 8,
+      "n_steps": 2048,
+      "batch_size": 256,
+      "map_file": "maps/1v1/starter.csv",
+      "wall_seconds": 37.679,
+      "fps_wall": 1739.3,
+      "cuda_available": true,
+      "gpu_name": "NVIDIA GeForce RTX 5090"
+    },
+    {
+      "device_arg": "cpu",
+      "param_device": "cpu",
+      "timesteps": 65536,
+      "n_envs": 8,
+      "n_steps": 2048,
+      "batch_size": 256,
+      "map_file": "maps/1v1/starter.csv",
+      "wall_seconds": 49.802,
+      "fps_wall": 1315.9,
+      "cuda_available": true,
+      "gpu_name": "NVIDIA GeForce RTX 5090"
+    }
+  ],
+  "comparison": {
+    "cpu_wall_s": 49.802,
+    "cuda_wall_s": 37.679,
+    "cpu_fps": 1315.9,
+    "cuda_fps": 1739.3,
+    "speedup_cuda_over_cpu": 1.322,
+    "note": "For this game env, rollouts are CPU-heavy; GPU mainly accelerates the PPO network update. Speedup is often modest unless batch is large."
+  }
+}

@@ -1,0 +1,93 @@
+# Short CUDA curriculum to verify PPO can beat scripted bots.
+# Stages: starter vs random -> starter vs simple (SimpleBot).
+algorithm: maskable_ppo
+seed: 42
+total_timesteps: 3_000_000
+
+env:
+  n_envs: 8
+  use_subprocess: true
+  max_steps: 1500
+  max_turns: 40
+  max_actions_per_turn: 40
+  action_space_type: flat_discrete
+  max_flat_actions: 512
+  fog_of_war: false
+  reward_config:
+    win_by_hq_capture: 50.0
+    win_by_elimination: 50.0
+    win: 50.0
+    loss: -50.0
+    draw: -50.0
+    income_diff: 0.05
+    unit_diff: 0.3
+    structure_control: 1.0
+    create_unit: 0.0
+    move: 0.0
+    damage_scale: 0.0
+    kill: 0.0
+    seize_progress: 3.0
+    capture: 10.0
+    tower_capture: 15.0
+    building_capture: 40.0
+    hq_capture: 25.0
+    cure: 0.0
+    heal_scale: 0.0
+    paralyze: 0.0
+    haste: 0.0
+    defence_buff: 0.0
+    attack_buff: 0.0
+    invalid_action: -0.1
+    turn_penalty: 0.0
+    win_speed_bonus: 50.0
+    enemy_neutral_capture: -8.0
+    enemy_owned_capture: -15.0
+
+ppo:
+  learning_rate: 3.0e-4
+  n_steps: 2048
+  batch_size: 256
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.05
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  use_action_masking: true
+  device: cuda
+  policy_kwargs:
+    net_arch:
+      pi: [256, 256]
+      vf: [256, 256]
+
+eval:
+  eval_freq: 50000
+  n_eval_episodes: 30
+  checkpoint_freq: 100000
+
+logging:
+  log_dir: ./logs
+  tensorboard: true
+
+curriculum:
+  stages:
+    - name: starter_random
+      map_file: maps/1v1/starter.csv
+      opponent: random
+      promotion_win_rate: 0.70
+      patience: 2
+      max_timesteps: 800000
+      ent_coef: 0.10
+      n_eval_episodes: 40
+      max_turns: 40
+
+    - name: starter_simple
+      map_file: maps/1v1/starter.csv
+      opponent: simple
+      promotion_win_rate: 0.60
+      patience: 3
+      max_timesteps: 1_500_000
+      ent_coef: 0.05
+      n_eval_episodes: 40
+      max_turns: 40
